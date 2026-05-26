@@ -6,7 +6,7 @@ from scalar_fastapi import (
 )
 from sqlalchemy import text
 from routes.login import login_router
-from routes.products import products_router
+from routes.productos import products_router
 from database.connection import engine
 
 app = FastAPI(

@@ -1,0 +1,48 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from utils.auth import verify_token
+from database.connection import get_db
+from models.producto import Producto
+from schemas.producto import ProductoCreate
+
+products_router = APIRouter()
+
+@products_router.get("/obtener_productos")
+def obtener_productos(db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+    productos = db.query(Producto).filter(Producto.id_estatus == 1).all()
+    return productos
+
+@products_router.post("/agregar_producto")
+def agregar_producto(data: ProductoCreate, db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+    nuevo_producto = Producto(
+        nombre=data.nombre,
+        descripcion=data.descripcion,
+        precio=data.precio,
+        stock=data.stock,
+        id_estatus=1
+    )
+    db.add(nuevo_producto)
+    db.commit()
+    db.refresh(nuevo_producto)
+    return nuevo_producto
+
+@products_router.put("/activar_producto/{id_producto}")
+def activar_producto(id_producto: int, db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+    producto = db.query(Producto).filter(Producto.id_producto == id_producto).first()
+    if not producto:
+        return {"error": "Producto no encontrado"}
+    
+    producto.id_estatus = 1
+    db.commit()
+    return {"message": "Producto activado exitosamente"}
+
+
+@products_router.put("/desactivar_producto/{id_producto}")
+def desactivar_producto(id_producto: int, db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+    producto = db.query(Producto).filter(Producto.id_producto == id_producto).first()
+    if not producto:
+        return {"error": "Producto no encontrado"}
+
+    producto.id_estatus = 2
+    db.commit()
+    return {"message": "Producto desactivado exitosamente"}
