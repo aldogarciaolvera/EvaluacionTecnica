@@ -5,5 +5,5 @@ CREATE TABLE usuarios (
     contrasena varchar(25) NOT NULL,
     id_rol INT,
     id_estatus INT,
-    fechaCracion TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 );
