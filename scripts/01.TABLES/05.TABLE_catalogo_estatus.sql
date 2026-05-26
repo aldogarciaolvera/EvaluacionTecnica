@@ -1,3 +1,5 @@
+USE evaluacion_tecnica;
+
 CREATE TABLE catalogo_estatus (
     id_catalogo_estatus INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE,

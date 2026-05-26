@@ -1,34 +1,41 @@
-# Evaluacion Tecnica — Grupo Castores
+# Evaluacion Tecnica - Grupo Castores
 
-Este repositorio contiene el código y las respuestas de la evaluación técnica de programación.
+Repositorio con la solución desarrollada para la evaluación técnica. Incluye respuestas de SQL, diseño relacional, scripts de base de datos y el backend construido con FastAPI.
 
----
+## Estructura general
 
-## Contenido
+- `README.md`: visión general del proyecto completo.
+- `back/`: backend con FastAPI, SQLAlchemy y autenticación JWT.
+- `front/`: 
+- `scripts/`: scripts SQL para crear tablas, relaciones y datos iniciales.
+- `Respuestas_Evaluacion_Practica.pdf`: respuestas del cuestionario SQL.
+- `Diagrama_BD.png`: diagrama relacional del modelo de datos.
 
-- [Conocimiento de SQL](#conocimiento-de-sql)
-- [Ejercicio práctico BD](#ejercicio-práctico-bd)
-- [Scripts](#scripts)
+## Documentación incluida
 
+### 1. Conocimiento de SQL
 
-## 1.- Conocimiento de SQL
+En la raíz del repositorio se incluye el archivo con las respuestas a la evaluación teórica: [Respuestas_Evaluacion_Practica.pdf](Respuestas_Evaluacion_Practica.pdf).
 
-En la raíz del repositorio se incluye un PDF con las respuestas a las preguntas de la evaluación práctica: [Respuestas_Evaluacion_Practica.pdf](Respuestas_Evaluacion_Practica.pdf)
+### 2. Base de datos
 
+El modelo relacional se documenta en [Diagrama_BD.png](Diagrama_BD.png) y los scripts se encuentran en `scripts/`.
 
-## 2.- Ejercicio práctico BD
+Orden sugerido de ejecución:
 
-### 2.1 Descripción
+1. `scripts/01.TABLES/`
+2. `scripts/02.RELACION/`
+3. `scripts/03.INSERTS/`
 
-Para este ejercicio se solicita un diagrama relacional que muestre las relaciones entre `usuarios` y las demás tablas creadas para resolver el escenario descrito. La imagen se adjunta en la raíz del repositorio y se muestra a continuación.
+### 3. Backend
 
-**Diagrama de la base de datos**
+La implementación de la API vive en `back/` y su documentación técnica completa está en [back/README.md](back/README.md).
 
-![Diagrama BD](Diagrama_BD.png)
+## Requerimientos generales
 
-### 2.2 Scripts
+- Python 3.10 o superior.
+- MySQL 8 o compatible.
+- Variables de entorno para conexión a base de datos y JWT.
+- Dependencias instaladas desde `back/requirements.txt`.
 
-Se crea la carpeta `scripts/` para almacenar los archivos SQL relacionados con la creación de tablas, relaciones e inserts.
-
----
 
