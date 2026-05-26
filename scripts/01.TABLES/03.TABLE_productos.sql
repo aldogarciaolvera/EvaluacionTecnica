@@ -1,3 +1,5 @@
+USE evaluacion_tecnica;
+
 CREATE TABLE productos (
     id_producto INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,

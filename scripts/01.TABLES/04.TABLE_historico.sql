@@ -1,3 +1,5 @@
+USE evaluacion_tecnica;
+
 CREATE TABLE historico (
     id_historico INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT,

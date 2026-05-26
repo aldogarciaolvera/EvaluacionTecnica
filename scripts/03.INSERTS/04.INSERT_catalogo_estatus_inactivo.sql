@@ -1,4 +1,4 @@
-INSERT INTO catalogo_estatus (
+INSERT INTO evaluacion_tecnica.catalogo_estatus (
     nombre, 
     descripcion
 ) VALUES (

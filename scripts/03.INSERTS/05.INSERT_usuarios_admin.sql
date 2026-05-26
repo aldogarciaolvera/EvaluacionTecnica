@@ -1,4 +1,4 @@
-INSERT INTO usuarios(
+INSERT INTO evaluacion_tecnica.usuarios(
     nombre,
     correo,
     contrasena,
