@@ -1,5 +1,5 @@
 from fastapi import HTTPException, Depends
-from utils.auth import verify_token
+from app.utils.auth import verify_token
 
 def rol_requerido(roles_aceptados: list):
     def checar_rol(ususario = Depends(verify_token)):

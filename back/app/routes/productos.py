@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from utils.auth import verify_token
-from utils.roles import rol_requerido
-from database.connection import get_db
-from models.producto import Producto
-from schemas.producto import ProductoCreate
+from app.utils.auth import verify_token
+from app.utils.roles import rol_requerido
+from app.database.connection import get_db
+from app.models.producto import Producto
+from app.schemas.producto import ProductoCreate
 
 products_router = APIRouter()
 

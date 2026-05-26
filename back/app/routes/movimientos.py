@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from utils.roles import rol_requerido
-from database.connection import get_db
-from models.producto import Producto
-from models.historial import Historial
-from schemas.movimiento import Movimiento
+from app.utils.roles import rol_requerido
+from app.database.connection import get_db
+from app.models.producto import Producto
+from app.models.historial import Historial
+from app.schemas.movimiento import Movimiento
 
 movimientos_router = APIRouter()
 

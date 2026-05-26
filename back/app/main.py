@@ -5,9 +5,9 @@ from scalar_fastapi import (
     DocumentDownloadType
 )
 from sqlalchemy import text
-from routes.login import login_router
-from routes.productos import products_router
-from routes.movimientos import movimientos_router
+from app.routes.login import login_router
+from app.routes.productos import products_router
+from app.routes.movimientos import movimientos_router
 
 app = FastAPI(
     title = "Api Evaluacion Tecnica", 

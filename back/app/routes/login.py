@@ -1,13 +1,13 @@
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from database.connection import get_db
-from models.usuario import Usuario
-from schemas.auth import LoginRequest
-from schemas.nuevo_usuario import NuevoUsuario
-from utils.auth import verify_token
-from utils.jwt import create_access_token
-from utils.hash import hash_password, verify_password
+from app.database.connection import get_db
+from app.models.usuario import Usuario
+from app.schemas.auth import LoginRequest
+from app.schemas.nuevo_usuario import NuevoUsuario
+from app.utils.auth import verify_token
+from app.utils.jwt import create_access_token
+from app.utils.hash import hash_password, verify_password
 
 login_router = APIRouter()
 
