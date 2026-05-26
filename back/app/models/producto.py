@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Boolean
+from sqlalchemy import Column, Integer, String, Numeric
 from database.connection import Base
 
 class Producto(Base):
