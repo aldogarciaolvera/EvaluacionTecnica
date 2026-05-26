@@ -4,4 +4,3 @@ class ProductoCreate(BaseModel):
     nombre: str
     descripcion: str
     precio: float
-    stock: int

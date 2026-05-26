@@ -8,17 +8,17 @@ from schemas.producto import ProductoCreate
 products_router = APIRouter()
 
 @products_router.get("/obtener_productos")
-def obtener_productos(db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+def obtener_productos(db: Session = Depends(get_db), usuario = Depends(verify_token)):
     productos = db.query(Producto).filter(Producto.id_estatus == 1).all()
     return productos
 
 @products_router.post("/agregar_producto")
-def agregar_producto(data: ProductoCreate, db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+def agregar_producto(data: ProductoCreate, db: Session = Depends(get_db), usuario = Depends(verify_token)):
     nuevo_producto = Producto(
         nombre=data.nombre,
         descripcion=data.descripcion,
         precio=data.precio,
-        stock=data.stock,
+        stock=0,
         id_estatus=1
     )
     db.add(nuevo_producto)
@@ -27,7 +27,7 @@ def agregar_producto(data: ProductoCreate, db: Session = Depends(get_db), usuari
     return nuevo_producto
 
 @products_router.put("/activar_producto/{id_producto}")
-def activar_producto(id_producto: int, db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+def activar_producto(id_producto: int, db: Session = Depends(get_db), usuario = Depends(verify_token)):
     producto = db.query(Producto).filter(Producto.id_producto == id_producto).first()
     if not producto:
         return {"error": "Producto no encontrado"}
@@ -38,7 +38,7 @@ def activar_producto(id_producto: int, db: Session = Depends(get_db), usuario: s
 
 
 @products_router.put("/desactivar_producto/{id_producto}")
-def desactivar_producto(id_producto: int, db: Session = Depends(get_db), usuario: str = Depends(verify_token)):
+def desactivar_producto(id_producto: int, db: Session = Depends(get_db), usuario = Depends(verify_token)):
     producto = db.query(Producto).filter(Producto.id_producto == id_producto).first()
     if not producto:
         return {"error": "Producto no encontrado"}

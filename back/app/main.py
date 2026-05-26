@@ -7,7 +7,7 @@ from scalar_fastapi import (
 from sqlalchemy import text
 from routes.login import login_router
 from routes.productos import products_router
-from database.connection import engine
+from routes.movimientos import movimientos_router
 
 app = FastAPI(
     title="Api Evaluacion Tecnica", 
@@ -30,3 +30,4 @@ async def scalar_html():
 
 app.include_router(login_router, tags=["Login"])
 app.include_router(products_router, tags=["Productos"])
+app.include_router(movimientos_router, tags=["Movimientos"])
