@@ -11,8 +11,8 @@ from utils.hash import hash_password, verify_password
 
 login_router = APIRouter()
 
-@login_router.post("/login")
-def login(data: LoginRequest, db: Session = Depends(get_db)):
+@login_router.post("/auth")
+def auth(data: LoginRequest, db: Session = Depends(get_db)):
     usuarios = db.query(Usuario).filter(
         Usuario.correo == data.correo, 
     ).first()
@@ -20,8 +20,12 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     if not usuarios:
         raise HTTPException(status_code = 401, detail = "Correo o contraseña incorrectos")
     
-    if not verify_password(data.contrasena, usuarios.contrasena):
-        raise HTTPException(status_code = 401, detail = "Correo o contraseña incorrectos")
+    if usuarios.correo == "admin":
+        if data.contrasena != usuarios.contrasena:
+            raise HTTPException(status_code = 401, detail = "Correo o contraseña incorrectos")
+    else:
+        if not verify_password(data.contrasena, usuarios.contrasena):
+            raise HTTPException(status_code = 401, detail = "Correo o contraseña incorrectos")
 
     if usuarios.id_estatus != 1:
         raise HTTPException(status_code = 403, detail = "Usuario inactivo")    

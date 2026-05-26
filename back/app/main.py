@@ -28,9 +28,12 @@ async def scalar_html():
         show_sidebar = True,
         persist_auth = True,
         document_download_type = DocumentDownloadType.NONE,
-        hide_models=True,
+        hide_models = True,
+        hide_search = True,
+        hide_client_button = True,
+        show_developer_tools = "never"
     )
 
-app.include_router(login_router, tags=["Login"])
-app.include_router(products_router, tags=["Productos"])
-app.include_router(movimientos_router, tags=["Movimientos"])
+app.include_router(login_router,prefix="/api/login", tags=["Login"])
+app.include_router(products_router, prefix="/api/productos", tags=["Productos"])
+app.include_router(movimientos_router, prefix="/api/movimientos", tags=["Movimientos"])

@@ -1,30 +1,63 @@
 # Backend - Evaluacion Tecnica Castores
 
-API REST desarrollada con FastAPI para el ejercicio practico de autenticacion y gestion de productos.
+API REST desarrollada con FastAPI para cubrir autenticacion, gestion de productos y registro de movimientos de inventario.
 
-## Que hace esta app
+## Descripcion general
 
-- Autentica usuarios con endpoint de login.
-- Genera tokens JWT para sesiones.
-- Protege endpoints de productos mediante token Bearer.
-- Consulta y administra productos activos/inactivos en MySQL.
+El backend expone una API protegida con JWT que permite:
 
-## Que contiene
+- Autenticar usuarios mediante correo y contraseña.
+- Diferenciar acceso por rol con dependencias reutilizables.
+- Consultar, registrar, activar y desactivar productos.
+- Registrar movimientos de inventario en el historico.
+- Consultar el historico de movimientos.
+- Publicar la documentacion interactiva mediante Scalar en la ruta raiz del servicio.
 
-Estructura principal dentro de `back/app/`:
+## Estructura principal
 
-- `main.py`: arranque de FastAPI y registro de rutas.
-- `database/connection.py`: conexion a MySQL y sesion SQLAlchemy.
-- `routes/login.py`: endpoint de autenticacion (`/login`).
-- `routes/productos.py`: endpoints CRUD basicos para productos.
-- `models/`: modelos ORM (`Usuario`, `Producto`).
-- `schemas/`: validacion de payloads de entrada con Pydantic.
-- `utils/jwt.py` y `utils/auth.py`: creacion y validacion de JWT.
+Dentro de `back/app/`:
 
-## Requisitos
+- `main.py`: arranque de FastAPI, configuracion de Scalar y registro de rutas.
+- `database/connection.py`: conexion a MySQL y administracion de sesiones SQLAlchemy.
+- `routes/login.py`: login y alta de usuarios.
+- `routes/productos.py`: operaciones sobre productos.
+- `routes/movimientos.py`: registro y consulta de movimientos.
+- `models/`: modelos ORM de usuarios, productos e historico.
+- `schemas/`: validacion de entradas con Pydantic.
+- `utils/`: utilidades de JWT, autenticacion, hashing y control de roles.
 
-- Python 3.10+ (recomendado).
-- MySQL disponible y base de datos creada.
+## Requerimientos
+
+### Requisitos previos
+
+- Python 3.10 o superior.
+- MySQL 8 o compatible.
+- Base de datos creada antes de iniciar la API.
+- Variables de entorno configuradas.
+
+### Variables de entorno necesarias
+
+El proyecto espera un archivo `.env` en `back/` con valores como estos:
+
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=evaluacion_tecnica
+DB_USER=tu_usuario
+DB_PASSWORD=tu_password
+SECRET_KEY=una_clave_secreta_larga
+ALGORITHM=HS256
+```
+
+## Preparacion de base de datos
+
+Ejecuta los scripts en este orden:
+
+1. `scripts/01.TABLES/`
+2. `scripts/02.RELACION/`
+3. `scripts/03.INSERTS/`
+
+Esto crea las tablas, sus relaciones y los datos iniciales para roles, estatus y usuario administrador.
 
 ## Instalacion
 
@@ -34,34 +67,7 @@ Desde la carpeta `back/`:
 pip install -r requirements.txt
 ```
 
-## Configuracion de entorno
-
-1. Crea un archivo `.env` en `back/`.
-2. Toma como base `back/.env.example`.
-3. Completa variables:
-
-```env
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=tu_base
-DB_USER=tu_usuario
-DB_PASSWORD=tu_password
-
-SECRET_KEY=tu_clave_secreta_larga
-ALGORITHM=HS256
-```
-
-Nota: el proyecto usa `SECRET_KEY` y `ALGORITHM` para JWT.
-
-## Como ejecutar
-
-Puedes correr la app de dos formas:
-
-Desde `back/`:
-
-```bash
-uvicorn app.main:app --reload --port 8001
-```
+## Ejecucion
 
 Desde `back/app/`:
 
@@ -69,47 +75,58 @@ Desde `back/app/`:
 uvicorn main:app --reload --port 8001
 ```
 
-## Como usar la API
+## Documentacion interactiva
 
-### 1) Login
+Una vez levantado el servicio, Scalar queda disponible en la ruta raíz configurada por FastAPI, normalmente `http://localhost:8001/`.
 
-- Endpoint: `POST /login`
-- Body JSON:
+## Endpoints
 
-```json
-{
-	"correo": "usuario@dominio.com",
-	"contrasena": "123456"
-}
-```
+### Autenticacion
 
-Respuesta esperada: `access_token` y `token_type`.
+- `POST /api/login/auth`
 
-### 2) Consumir endpoints protegidos
+### Usuarios
 
-Envia el token en header:
+- `POST /api/login/agregar_usuario` - requiere token.
 
-```http
-Authorization: Bearer <access_token>
-```
+### Productos
 
-Endpoints de productos:
+- `GET /api/productos/obtener_productos` - requiere token.
+- `POST /api/productos/agregar_producto` - requiere token.
+- `PUT /api/productos/activar_producto/{id_producto}` - requiere token y rol de administrador.
+- `PUT /api/productos/desactivar_producto/{id_producto}` - requiere token y rol de administrador.
 
-- `GET /obtener_productos`
-- `POST /agregar_producto`
-- `PUT /activar_producto/{id_producto}`
-- `PUT /desactivar_producto/{id_producto}`
+### Movimientos
+
+- `POST /api/movimientos/movimiento_historico` - requiere token y rol administrador o almacenista.
+- `GET /api/movimientos/obtener_movimientos` - requiere token y rol administrador o almacenista.
+
+## Modelo de acceso
+
+- El endpoint de login emite un JWT con el identificador del usuario, correo y rol.
+- El decorador de roles valida acceso según los roles permitidos por endpoint.
+- El usuario con correo `admin` conserva contraseña en texto plano en la BD por compatibilidad con la carga inicial.
+- El resto de usuarios se autentica con verificacion de hash usando bcrypt.
 
 ## Dependencias principales
 
-- FastAPI + Uvicorn
-- SQLAlchemy + PyMySQL
-- python-jose (JWT)
-- python-dotenv
-- passlib/bcrypt
+- FastAPI y Uvicorn.
+- SQLAlchemy y PyMySQL.
+- python-jose para JWT.
+- passlib con bcrypt para hashing.
+- python-dotenv para cargar variables de entorno.
+- scalar-fastapi para la documentacion interactiva.
+
+## Estructura de datos relevante
+
+- `usuarios`: informacion de autenticacion y rol.
+- `productos`: catalogo de productos con stock y estatus.
+- `historico`: registro de entradas y salidas de inventario.
 
 ## Problemas comunes
 
-- Error de conexion MySQL: verifica variables `DB_*` y acceso a la base.
-- Error de JWT: revisa que `SECRET_KEY` y `ALGORITHM` esten definidos.
-- Error de imports al ejecutar: confirma que estas en la carpeta correcta (`back/` o `back/app/`) segun el comando usado.
+- Error de conexion a MySQL: revisa `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD`.
+- Error al generar o validar JWT: confirma `SECRET_KEY` y `ALGORITHM`.
+- Error al importar modulos: ejecuta el comando desde la carpeta indicada en la seccion de ejecucion.
+- Error con bcrypt: reinstala dependencias si el entorno local no tiene soporte correcto para hashing.
+
