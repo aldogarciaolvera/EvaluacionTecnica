@@ -1,8 +1,9 @@
+import os 
 from jose import jwt
 from datetime import datetime, timedelta
 
-SECRET_KEY = "supersecret"
-ALGORITHM = "HS256"
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
 
 def create_access_token(data: dict):
     to_encode = data.copy()

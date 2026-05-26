@@ -4,8 +4,9 @@ from scalar_fastapi import (
     Layout,
     DocumentDownloadType
 )
-from routes.login import login_router
 from sqlalchemy import text
+from routes.login import login_router
+from routes.products import products_router
 from database.connection import engine
 
 app = FastAPI(
@@ -28,3 +29,4 @@ async def scalar_html():
     )
 
 app.include_router(login_router, tags=["Login"])
+app.include_router(products_router, tags=["Productos"])
