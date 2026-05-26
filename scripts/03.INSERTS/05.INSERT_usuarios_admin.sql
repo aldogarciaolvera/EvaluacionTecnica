@@ -5,8 +5,8 @@ INSERT INTO evaluacion_tecnica.usuarios(
     id_rol,
     id_estatus
 ) VALUES (
-    'Aldo Garcia',
-    'aldo.garcia@example.com',
+    'admin',
+    'admin',
     '1234',
     1,
     1
