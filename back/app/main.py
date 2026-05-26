@@ -4,7 +4,7 @@ from scalar_fastapi import (
     Layout,
     DocumentDownloadType
 )
-from routes.auth import auth_router
+from routes.login import login_router
 from sqlalchemy import text
 from database.connection import engine
 
@@ -27,13 +27,4 @@ async def scalar_html():
         document_download_type=DocumentDownloadType.NONE
     )
 
-@app.get("/conexion")
-def root():
-    with engine.connect() as connection:
-        result = connection.execute(text("SELECT '¡Conexión exitosa!' AS mensaje"))
-        return {
-            "db":"ok",
-            "result": result.scalar()
-        }
-
-app.include_router(auth_router, tags=["Login"])
+app.include_router(login_router, tags=["Login"])

@@ -10,4 +10,3 @@ class Usuario(Base):
     contrasena = Column(String, nullable=False)
     id_rol = Column(Integer, nullable=False)
     id_estatus = Column(Integer, nullable=False)
-    fecha_creacion = Column(String, nullable=False)

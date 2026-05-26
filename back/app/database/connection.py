@@ -12,8 +12,8 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 DATABASE_URL = (
-    f"mysql+pymysql://{DB_USER}"
-    f":{DB_PASSWORD}@"
+    f"mysql+pymysql://{DB_USER}:"
+    f"{DB_PASSWORD}@"
     f"{DB_HOST}:"
     f"{DB_PORT}/"
     f"{DB_NAME}"

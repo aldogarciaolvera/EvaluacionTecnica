@@ -1,7 +1,7 @@
 from jose import jwt
 from datetime import datetime, timedelta
 
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "supersecret"
 ALGORITHM = "HS256"
 
 def create_access_token(data: dict):
