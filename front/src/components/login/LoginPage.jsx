@@ -77,7 +77,7 @@ const Header = styled.div`
 `;
 
 const Titulo = styled.h1`
-  font-family: 'Outfit', sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 1.8rem;
   font-weight: 800;
   color: ${props => props.theme.textTitle};
