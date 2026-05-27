@@ -1,9 +1,11 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.utils.auth import verify_token
 from app.utils.roles import rol_requerido
 from app.database.connection import get_db
 from app.models.producto import Producto
+from app.models.historial import Historial
 from app.schemas.producto import ProductoCreate, StockUpdate
 
 products_router = APIRouter()
@@ -65,6 +67,19 @@ def incrementar_stock(id_producto: int, data: StockUpdate, db: Session = Depends
     db.commit()
     db.refresh(producto)
 
+    try:
+        nuevo_historial = Historial(
+            id_usuario = usuario["user_id"],
+            id_producto = id_producto,
+            tipo_operacion = "ENTRADA",
+            cantidad = data.cantidad,
+            fecha_operacion = datetime.now().isoformat()
+        )
+        db.add(nuevo_historial)
+        db.commit()
+    except Exception:
+        pass
+
     return {
         "message": "Stock actualizado correctamente",
         "stock": producto.stock,
@@ -89,6 +104,19 @@ def salida_producto(id_producto: int, data: StockUpdate, db: Session = Depends(g
     producto.stock = producto.stock - data.cantidad
     db.commit()
     db.refresh(producto)
+
+    try:
+        nuevo_historial = Historial(
+            id_usuario = usuario["user_id"],
+            id_producto = id_producto,
+            tipo_operacion = "SALIDA",
+            cantidad = data.cantidad,
+            fecha_operacion = datetime.now().isoformat()
+        )
+        db.add(nuevo_historial)
+        db.commit()
+    except Exception:
+        pass
 
     return {
         "message": "Salida registrada correctamente",
