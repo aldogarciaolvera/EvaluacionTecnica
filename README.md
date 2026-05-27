@@ -1,7 +1,7 @@
 # Evaluación Técnica - Grupo Castores
 
 <!-- Badges -->
-[![GitHub Repo](https://img.shields.io/badge/github-repo-0066cc?logo=github&logoColor=white)](https://github.com/aldogarciaolvera/EvaluacionTecnica) [![Production Live](https://img.shields.io/badge/production-live-success?logo=vercel&logoColor=white)](https://evaluaciontecnica.atomsystems.org/) [![React](https://img.shields.io/badge/React-18.0-61DAFB?logo=react&logoColor=white)](https://reactjs.org) [![Vite](https://img.shields.io/badge/Vite-4.0-brightgreen?logo=vite&logoColor=white)](https://vitejs.dev) [![FastAPI](https://img.shields.io/badge/FastAPI-0.95-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com) [![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org) [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com) [![Docker](https://img.shields.io/badge/Docker-%232496ED?logo=docker&logoColor=white)](https://www.docker.com) [![Node.js](https://img.shields.io/badge/Node.js-18.0-43853D?logo=node.js&logoColor=white)](https://nodejs.org) [![pnpm](https://img.shields.io/badge/pnpm-7.0-0066cc?logo=pnpm&logoColor=white)](https://pnpm.io)
+[![GitHub Repo](https://img.shields.io/badge/github-repo-0066cc?logo=github&logoColor=white)](https://github.com/aldogarciaolvera/EvaluacionTecnica) [![React](https://img.shields.io/badge/React-18.0-61DAFB?logo=react&logoColor=white)](https://reactjs.org) [![Vite](https://img.shields.io/badge/Vite-4.0-brightgreen?logo=vite&logoColor=white)](https://vitejs.dev) [![FastAPI](https://img.shields.io/badge/FastAPI-0.95-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com) [![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org) [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com) [![Docker](https://img.shields.io/badge/Docker-%232496ED?logo=docker&logoColor=white)](https://www.docker.com) [![Node.js](https://img.shields.io/badge/Node.js-22-43853D?logo=node.js&logoColor=white)](https://nodejs.org) [![pnpm](https://img.shields.io/badge/pnpm-7.0-0066cc?logo=pnpm&logoColor=white)](https://pnpm.io)
 
 Solución completa de un sistema de inventario con:
 
@@ -36,12 +36,13 @@ Esta aplicación cubre un flujo de inventario con control de roles:
 ## Project URL
 
 Visita la aplicación en: [https://evaluaciontecnica.atomsystems.org/](https://evaluaciontecnica.atomsystems.org/)
+Asi como el Video de Demostracion: 
 
 ## Requisitos generales
 
 - **Python 3.10+**
 - **MySQL 8+**
-- **Node.js 18+**
+- **Node.js 22+**
 - **pnpm** (o npm/yarn) para el frontend
 - Variables de entorno adecuadas para la conexión a la base de datos y JWT
 
