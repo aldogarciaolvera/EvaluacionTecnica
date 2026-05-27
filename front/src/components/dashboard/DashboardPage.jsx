@@ -1,16 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Plus, MoreVertical } from 'lucide-react';
 import PageShell from '../ui/PageShell';
 import Boton from '../ui/Boton';
+import apiClient from '../../api/apiClient';
 
 export default function DashboardPage() {
-  const rows = [
-    { name: 'Precision Actuator X-500', sku: 'PA-500-RED-01', category: 'Electronics / High-Val', stock: '482 units', status: 'active' },
-    { name: 'Titanium Fastener Kit', sku: 'TF-KIT-44', category: 'Hardware / Aerospace', stock: '12 units', status: 'reserved' },
-    { name: 'Li-Ion Storage Module', sku: 'BATT-MOD-9X', category: 'Power Systems', stock: '1,024 units', status: 'active' },
-    { name: 'Fiber Optic Cable Reel', sku: 'CBL-FIB-100', category: 'Connectivity', stock: '250 units', status: 'inactive' }
-  ];
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await apiClient.get('/api/productos/obtener_productos');
+        setProducts(response.data || []);
+      } catch (err) {
+        setError('No se pudieron cargar los productos. Intenta nuevamente.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const rows = products.map((product) => ({
+    name: product.nombre,
+    sku: product.id_producto,
+    category: product.descripcion,
+    stock: `${product.stock} unidades`,
+    price: product.precio != null ? `$${product.precio.toFixed(2)}` : '-',
+    status: product.id_estatus === 1 ? 'active' : 'inactive',
+  }));
 
   return (
     <PageShell
@@ -18,25 +43,31 @@ export default function DashboardPage() {
       activeItem="Inventario"
       action={<Boton icon={Plus}>Añadir Producto</Boton>}
     >
-      <TabRow>
-        <Tabs>
-          <Tab $active>Activos (1,284)</Tab>
-          <Tab>Inactivos (42)</Tab>
-        </Tabs>
-        <TabActions>
-        </TabActions>
-      </TabRow>
+      <Separador />
 
       <TableCard>
         <TableHeader>
-          <div>Product Name</div>
-          <div>SKU</div>
-          <div>Category</div>
-          <div>Stock Level</div>
-          <div>Status</div>
-          <div>Actions</div>
+          <div>Producto</div>
+          <div>ID</div>
+          <div>Descripción</div>
+          <div>Stock</div>
+          <div>Precio</div>
+          <div>Estado</div>
         </TableHeader>
-        {rows.map((row) => (
+
+        {isLoading && (
+          <TableMessage>Cargando productos...</TableMessage>
+        )}
+
+        {error && (
+          <TableMessage $error>{error}</TableMessage>
+        )}
+
+        {!isLoading && !error && rows.length === 0 && (
+          <TableMessage>No se encontraron productos.</TableMessage>
+        )}
+
+        {!isLoading && !error && rows.map((row) => (
           <TableRow key={row.sku}>
             <ProductCell>
               <ProductThumb />
@@ -45,45 +76,16 @@ export default function DashboardPage() {
             <SkuTag>{row.sku}</SkuTag>
             <div>{row.category}</div>
             <div>{row.stock}</div>
+            <div>{row.price}</div>
             <StatusPill $variant={row.status}>{row.status}</StatusPill>
-            <div><MoreVertical size={16} /></div>
           </TableRow>
         ))}
-        <Pagination>
-          <div>Showing 1 to 4 of 1,284 products</div>
-          <PaginationNumbers>
-            <PageButton>&lt;</PageButton>
-            <PageButton $active>1</PageButton>
-            <PageButton>2</PageButton>
-            <PageButton>3</PageButton>
-            <span>...</span>
-            <PageButton>321</PageButton>
-            <PageButton>&gt;</PageButton>
-          </PaginationNumbers>
-        </Pagination>
       </TableCard>
-
-      <StatsGrid>
-        <StatCard>
-          <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Stock Value</h4>
-          <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>$1.2M</p>
-        </StatCard>
-        <StatCard>
-          <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Low Stock Alerts</h4>
-          <p style={{ fontSize: '1.8rem', fontWeight: 800, color: '#ef4444' }}>18</p>
-        </StatCard>
-        <StatCard>
-          <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Inventory Accuracy</h4>
-          <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>99.8%</p>
-        </StatCard>
-      </StatsGrid>
     </PageShell>
   );
 }
 
-
-
-const TabRow = styled.div`
+const Separador = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -94,36 +96,6 @@ const TabRow = styled.div`
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
-  }
-`;
-
-const Tabs = styled.div`
-  display: flex;
-  gap: 2rem;
-
-  @media (max-width: 768px) {
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-`;
-
-const Tab = styled.button`
-  padding: 0.75rem 0.25rem;
-  background: none;
-  border: none;
-  border-bottom: 2px solid ${props => (props.$active ? props.theme.primary : 'transparent')};
-  color: ${props => (props.$active ? props.theme.primary : props.theme.textMuted)};
-  font-weight: 600;
-  cursor: pointer;
-`;
-
-const TabActions = styled.div`
-  display: flex;
-  gap: 0.75rem;
-
-  @media (max-width: 768px) {
-    justify-content: flex-start;
-    flex-wrap: wrap;
   }
 `;
 
@@ -150,6 +122,14 @@ const TableHeader = styled.div`
   }
 `;
 
+const TableMessage = styled.div`
+  padding: 1.25rem 1.5rem;
+  color: ${props => (props.$error ? '#991b1b' : props.theme.textMuted)};
+  background: ${props => (props.$error ? '#fee2e2' : '#f8fafc')};
+  text-align: center;
+  font-size: 0.95rem;
+`;
+
 const TableRow = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr 1.3fr 1fr 1fr 0.5fr;
@@ -167,7 +147,7 @@ const TableRow = styled.div`
     background: ${props => props.theme.bgPage};
     border: 1px solid ${props => props.theme.border};
 
-    > div {
+    > * {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -176,12 +156,12 @@ const TableRow = styled.div`
       font-size: 0.95rem;
     }
 
-    > div:nth-child(1):before { content: 'Producto'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
-    > div:nth-child(2):before { content: 'SKU'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
-    > div:nth-child(3):before { content: 'Categoria'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
-    > div:nth-child(4):before { content: 'Stock'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
-    > div:nth-child(5):before { content: 'Estado'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
-    > div:nth-child(6):before { content: 'Acciones'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > *:nth-child(1):before { content: 'Producto'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > *:nth-child(2):before { content: 'ID'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > *:nth-child(3):before { content: 'Descripción'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > *:nth-child(4):before { content: 'Stock'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > *:nth-child(5):before { content: 'Precio'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > *:nth-child(6):before { content: 'Estado'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
   }
 `;
 
@@ -256,19 +236,4 @@ const PageButton = styled.button`
   @media (max-width: 768px) {
     min-width: 42px;
   }
-`;
-
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-`;
-
-const StatCard = styled.div`
-  background: ${props => props.theme.bgCard};
-  border: 1px solid ${props => props.theme.border};
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: ${props => props.theme.shadowCard};
 `;
