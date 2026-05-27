@@ -6,8 +6,10 @@ import Boton from '../ui/Boton';
 import Modal from '../ui/Modal';
 import Input from '../ui/Input';
 import apiClient from '../../api/apiClient';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export default function SalidasPage() {
+  const user = useAuthStore((state) => state.user);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -69,6 +71,12 @@ export default function SalidasPage() {
       await apiClient.put(`/api/productos/salida_producto/${selectedProduct.id_producto}`, {
         cantidad: salidaCantidad,
       });
+      await apiClient.post('/api/movimientos/movimiento_historico', {
+        id_usuario: user?.id_usuario,
+        id_producto: selectedProduct.id_producto,
+        cantidad: salidaCantidad,
+        tipo_operacion: 'SALIDA',
+      });
       setShowSalidaModal(false);
       setSelectedProduct(null);
       await fetchProducts();
@@ -86,6 +94,8 @@ export default function SalidasPage() {
       subtitle="Seleccione los productos para registrar la orden de salida."
       activeItem="Salidas"
     >
+      <Separador/>
+
       <TableCard>
         <TableHeader>
           <div>Producto</div>
@@ -163,6 +173,20 @@ export default function SalidasPage() {
   );
 }
 
+const Separador = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid ${props => props.theme.border};
+  margin-bottom: 1.25rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+`;
+
 const TableCard = styled.div`
   background: ${props => props.theme.bgCard};
   border: 1px solid ${props => props.theme.border};
@@ -178,7 +202,7 @@ const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr 1.3fr 1fr 1.6fr 0.5fr;
   padding: 0.75rem 1.5rem;
-  background: #f8fafc;
+  background: ${props => props.theme.bgCard};
   color: ${props => props.theme.textMuted};
   font-size: 0.75rem;
   text-transform: uppercase;

@@ -1,203 +1,197 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Download, Plus } from 'lucide-react';
+import { Download } from 'lucide-react';
 import PageShell from '../ui/PageShell';
 import Boton from '../ui/Boton';
 import PageCard from '../ui/PageCard';
+import apiClient from '../../api/apiClient';
+
+const FILTERS = [
+  { key: 'ALL', label: 'Todos' },
+  { key: 'ENTRADA', label: 'Entradas' },
+  { key: 'SALIDA', label: 'Salidas' }
+];
 
 export default function HistorialPage() {
-	const rows = [
-		{ type: 'Ingreso', sku: 'A923-01', user: 'John Schmidt', qty: '+124', location: 'Zona A-44', status: 'ok' },
-		{ type: 'Salida', sku: 'Z110-88', user: 'Maria Lopez', qty: '-45', location: 'Zona B-12', status: 'warn' },
-		{ type: 'Transferencia', sku: 'X442-99', user: 'Robert King', qty: '+12', location: 'A10 > C04', status: 'ok' },
-		{ type: 'Ajuste', sku: 'F201-21', user: 'System Admin', qty: '-2', location: 'Retornos', status: 'warn' }
-	];
+  const [movimientos, setMovimientos] = useState([]);
+  const [filter, setFilter] = useState('ALL');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-	return (
-		<PageShell
-			title="Historial de Movimientos"
-			subtitle="Auditoria de transacciones y cambios de stock."
-			activeItem="Historial"
-			action={<Boton icon={Plus}>Nuevo Ajuste</Boton>}
-		>
-			<FiltersCard>
-				<FilterGroup>
-					<FilterLabel>Rango de fechas</FilterLabel>
-					<FilterField>Ultimos 7 dias</FilterField>
-				</FilterGroup>
-				<FilterGroup>
-					<FilterLabel>Tipo de movimiento</FilterLabel>
-					<FilterField>Todos</FilterField>
-				</FilterGroup>
-				<FilterGroup>
-					<FilterLabel>Operador</FilterLabel>
-					<FilterField>Nombre de usuario</FilterField>
-				</FilterGroup>
-				<FilterGroup>
-					<FilterLabel>SKU</FilterLabel>
-					<FilterField>SKU-XXXX-XXX</FilterField>
-				</FilterGroup>
-				<FilterActions>
-					<GhostButton>Limpiar</GhostButton>
-					<GhostButton><Download size={16} />Exportar</GhostButton>
-				</FilterActions>
-			</FiltersCard>
+  useEffect(() => {
+    const fetchMovimientos = async () => {
+      setIsLoading(true);
+      setError(null);
 
-			<TableCard>
-				<TableHeader>
-					<div>Tipo</div>
-					<div>SKU</div>
-					<div>Usuario</div>
-					<div>Cantidad</div>
-					<div>Ubicacion</div>
-					<div>Estado</div>
-				</TableHeader>
-				{rows.map((row, index) => (
-					<TableRow key={`${row.sku}-${index}`}>
-						<TypeBadge>{row.type}</TypeBadge>
-						<div>{row.sku}</div>
-						<div>{row.user}</div>
-						<Quantity $positive={row.qty.startsWith('+')}>{row.qty}</Quantity>
-						<div>{row.location}</div>
-						<StatusDot $variant={row.status} />
-					</TableRow>
-				))}
-			</TableCard>
-		</PageShell>
-	);
+      try {
+        const response = await apiClient.get('/api/movimientos/obtener_movimientos');
+        setMovimientos(response.data || []);
+      } catch (err) {
+        setError('No se pudo cargar el historial. Intenta nuevamente.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMovimientos();
+  }, []);
+
+  const filteredMovimientos = movimientos.filter((item) => {
+    if (filter === 'ALL') return true;
+    if (filter === 'ENTRADA') return item.tipo_operacion?.toUpperCase() === 'ENTRADA';
+    if (filter === 'SALIDA') return item.tipo_operacion?.toUpperCase() === 'SALIDA';
+    return true;
+  });
+
+  return (
+    <PageShell
+      title="Historial de Movimientos"
+      subtitle="Auditoría de transacciones y cambios de stock."
+      activeItem="Historial"
+    >
+      <TopBar>
+        <FiltroGroup>
+          {FILTERS.map((option) => (
+            <FiltroBoton
+              key={option.key}
+              $active={filter === option.key}
+              onClick={() => setFilter(option.key)}
+            >
+              {option.label}
+            </FiltroBoton>
+          ))}
+        </FiltroGroup>
+      </TopBar>
+
+      <TableCard>
+        <TableHeader>
+          <div>Tipo de movimiento</div>
+          <div>Producto</div>
+          <div>Usuario</div>
+          <div>Cantidad</div>
+          <div>Fecha</div>
+        </TableHeader>
+
+        {isLoading && <TableMessage>Cargando movimientos...</TableMessage>}
+        {error && <TableMessage $error>{error}</TableMessage>}
+        {!isLoading && !error && filteredMovimientos.length === 0 && (
+          <TableMessage>No se encontraron movimientos.</TableMessage>
+        )}
+
+        {!isLoading && !error && filteredMovimientos.map((row, index) => (
+          <TableRow key={`${row.id_historial || row.id_producto || index}-${index}`}>
+            <TypeBadge $entrada={row.tipo_operacion?.toUpperCase() === 'ENTRADA'}>
+              {row.tipo_operacion || 'N/A'}
+            </TypeBadge>
+            <div>{row.producto?.nombre || row.producto_nombre || row.id_producto}</div>
+            <div>{row.usuario?.nombre || row.usuario_nombre || row.usuario?.correo || row.id_usuario}</div>
+            <Quantity $positive={row.tipo_operacion?.toUpperCase() === 'ENTRADA'}>
+              {row.tipo_operacion?.toUpperCase() === 'ENTRADA' ? `+${row.cantidad}` : `-${row.cantidad}`}
+            </Quantity>
+            <div>{row.fecha_operacion ? new Date(row.fecha_operacion).toLocaleString() : '---'}</div>
+          </TableRow>
+        ))}
+      </TableCard>
+    </PageShell>
+  );
 }
 
-const FiltersCard = styled(PageCard)`
-	padding: 1rem 1.25rem;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-	gap: 1rem;
-	align-items: end;
-	margin-bottom: 1.5rem;
-
-	@media (max-width: 768px) {
-		grid-template-columns: 1fr;
-		align-items: stretch;
-		margin-bottom: 1rem;
-	}
+const TopBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 `;
 
-const FilterGroup = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
+const FiltroGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 `;
 
-const FilterLabel = styled.span`
-	font-size: 0.75rem;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-	color: ${props => props.theme.textMuted};
-`;
+const FiltroBoton = styled(Boton)`
+  padding: 0.5rem 0.95rem;
+  font-size: 0.82rem;
+  border-radius: 999px;
+  border: 1px solid ${props => (props.$active ? props.theme.primary : props.theme.border)};
+  background: ${props => (props.$active ? props.theme.primary : props.theme.bgCard)};
+  color: ${props => (props.$active ? '#ffffff' : props.theme.textMain)};
+  min-width: auto;
+  box-shadow: none;
 
-const FilterField = styled.div`
-	border: 1px solid ${props => props.theme.border};
-	background: ${props => props.theme.bgInput};
-	padding: 0.6rem 0.75rem;
-	border-radius: 8px;
-	font-size: 0.9rem;
-	color: ${props => props.theme.textMain};
-`;
-
-const FilterActions = styled.div`
-	display: flex;
-	gap: 0.75rem;
-
-	@media (max-width: 520px) {
-		flex-direction: column;
-		align-items: stretch;
-	}
-`;
-
-const GhostButton = styled.button`
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	background: transparent;
-	border: 1px solid ${props => props.theme.border};
-	color: ${props => props.theme.textMain};
-	padding: 0.6rem 0.85rem;
-	border-radius: 8px;
-	cursor: pointer;
+  &:hover {
+    background: ${props => props.theme.primaryLight};
+    color: ${props => props.theme.textMain};
+  }
 `;
 
 const TableCard = styled(PageCard)`
-	overflow: hidden;
+  overflow: hidden;
 
-	@media (max-width: 768px) {
-		overflow-x: auto;
-	}
+  @media (max-width: 768px) {
+    overflow-x: auto;
+  }
 `;
 
 const TableHeader = styled.div`
-	display: grid;
-	grid-template-columns: 1.1fr 1fr 1.2fr 0.9fr 1.2fr 0.6fr;
-	padding: 0.75rem 1.5rem;
-	background: ${props => props.theme.bgHover};
-	color: ${props => props.theme.textMuted};
-	font-size: 0.75rem;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr 0.8fr 1fr;
+  padding: 0.75rem 1.25rem;
+  background: ${props => props.theme.bgHover};
+  color: ${props => props.theme.textMuted};
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 
-	@media (max-width: 768px) {
-		display: none;
-	}
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const TableMessage = styled.div`
+  padding: 1rem 1.25rem;
+  color: ${props => (props.$error ? '#991b1b' : props.theme.textMuted)};
+  background: ${props => (props.$error ? '#fee2e2' : '#f8fafc')};
+  text-align: center;
+  font-size: 0.9rem;
 `;
 
 const TableRow = styled.div`
-	display: grid;
-	grid-template-columns: 1.1fr 1fr 1.2fr 0.9fr 1.2fr 0.6fr;
-	padding: 0.9rem 1.5rem;
-	border-top: 1px solid ${props => props.theme.border};
-	align-items: center;
-	font-size: 0.9rem;
-	color: ${props => props.theme.textMain};
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr 0.8fr 1fr;
+  padding: 0.8rem 1.25rem;
+  border-top: 1px solid ${props => props.theme.border};
+  align-items: center;
+  font-size: 0.88rem;
+  color: ${props => props.theme.textMain};
 
-	@media (max-width: 768px) {
-		grid-template-columns: 1fr;
-		padding: 1rem;
-		gap: 0.75rem;
-		border-radius: 14px;
-		margin: 0.75rem;
-		background: ${props => props.theme.bgPage};
-		border: 1px solid ${props => props.theme.border};
-		grid-template-columns: 1fr;
-	}
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 0.75rem;
+    border-radius: 14px;
+    margin: 0.75rem;
+    background: ${props => props.theme.bgPage};
+    border: 1px solid ${props => props.theme.border};
+  }
 `;
 
 const TypeBadge = styled.span`
-	background: ${props => props.theme.primaryLight};
-	color: ${props => props.theme.primaryText};
-	border-radius: 999px;
-	padding: 0.2rem 0.75rem;
-	font-size: 0.75rem;
-	font-weight: 600;
-	text-align: center;
-
-	@media (max-width: 768px) {
-		display: inline-flex;
-	}
+  background: ${props => props.theme.primaryLight};
+  color: ${props => (props.$entrada ? props.theme.success : props.theme.error)};
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Quantity = styled.span`
-	color: ${props => (props.$positive ? props.theme.success : props.theme.error)};
-	font-weight: 700;
-`;
-
-const StatusDot = styled.span`
-	width: 12px;
-	height: 12px;
-	border-radius: 999px;
-	justify-self: start;
-	background: ${props => (props.$variant === 'ok' ? props.theme.success : props.theme.warningText)};
-
-	@media (max-width: 768px) {
-		width: 10px;
-		height: 10px;
-	}
+  color: ${props => (props.$positive ? props.theme.success : props.theme.error)};
+  font-weight: 700;
 `;

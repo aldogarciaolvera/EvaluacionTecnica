@@ -6,8 +6,10 @@ import Boton from '../ui/Boton';
 import Modal from '../ui/Modal';
 import Input from '../ui/Input';
 import apiClient from '../../api/apiClient';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export default function DashboardPage() {
+  const user = useAuthStore((state) => state.user);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -65,6 +67,12 @@ export default function DashboardPage() {
       setSaving(true);
       await apiClient.put(`/api/productos/incrementar_stock/${selectedProduct.id_producto}`, {
         cantidad: stockAmount,
+      });
+      await apiClient.post('/api/movimientos/movimiento_historico', {
+        id_usuario: user?.id_usuario,
+        id_producto: selectedProduct.id_producto,
+        cantidad: stockAmount,
+        tipo_operacion: 'ENTRADA',
       });
       setShowStockModal(false);
       setSelectedProduct(null);
@@ -235,7 +243,7 @@ const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr 1.3fr 1fr 1fr 1.1fr 0.5fr;
   padding: 0.75rem 1.5rem;
-  background: #f8fafc;
+  background: ${props => props.theme.bgCard};
   color: ${props => props.theme.textMuted};
   font-size: 0.75rem;
   text-transform: uppercase;
