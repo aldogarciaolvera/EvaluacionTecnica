@@ -4,6 +4,12 @@ import { User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import BotonTheme from './BotonTheme';
+import Modal from './Modal';
+import Input from './Input';
+import Boton from './Boton';
+import SelectorRol from './SelectorRol';
+import apiClient from '../../api/apiClient';
+import { Eye, EyeOff } from 'lucide-react';
 
 export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
   const user = useAuthStore((state) => state.user);
@@ -14,6 +20,11 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
   const userRole = user?.rol ? ` (${user.rol === 1 ? 'Admin' : 'Almacenista'})` : '';
   const displayName = `${userName}${userRole}`;
   const containerRef = React.useRef(null);
+  const [showAddUser, setShowAddUser] = React.useState(false);
+  const [userForm, setUserForm] = React.useState({ nombre: '', correo: '', contrasena: '', id_rol: 1 });
+  const [formError, setFormError] = React.useState(null);
+  const [addingUser, setAddingUser] = React.useState(false);
+  const [showPwdUser, setShowPwdUser] = React.useState(false);
 
   React.useEffect(() => {
     const handleClickOutside = (event) => {
@@ -46,6 +57,11 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
           </UserButton>
           {menuOpen && (
             <UserDropdown>
+              {user?.rol === 1 && (
+                <DropdownItem onClick={() => { setMenuOpen(false); setShowAddUser(true); }}>
+                  Agregar usuario
+                </DropdownItem>
+              )}
               <LogoutItem onClick={handleLogout}>Cerrar sesión</LogoutItem>
             </UserDropdown>
           )}
@@ -64,6 +80,69 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
           </NavItem>
         ))}
       </SidebarNav>
+
+      {showAddUser && (
+        <Modal title="Agregar Usuario">
+          <div style={{ display: 'grid', gap: 12 }}>
+            <Input label="Nombre" value={userForm.nombre} onChange={e => setUserForm(f => ({ ...f, nombre: e.target.value }))} />
+            <Input label="Correo" value={userForm.correo} onChange={e => setUserForm(f => ({ ...f, correo: e.target.value }))} />
+            <Input 
+              label="Contraseña" 
+              type={showPwdUser ? 'text' : 'password'} 
+              value={userForm.contrasena} 
+              onChange={e => setUserForm(f => ({ ...f, contrasena: e.target.value }))}
+              rightElement={(
+                <button 
+                  type="button" 
+                  style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
+                  onClick={() => setShowPwdUser(!showPwdUser)}
+                >
+                  {showPwdUser ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              )}
+            />
+            <SelectorRol
+              label="Rol"
+              options={[{ value: 1, label: 'Administrador' }, { value: 2, label: 'Almacenista' }]}
+              value={userForm.id_rol}
+              onChange={(val) => setUserForm(f => ({ ...f, id_rol: val }))}
+            />
+            {formError && <ErrorText>{formError}</ErrorText>}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
+            <Boton variant="outline" onClick={() => setShowAddUser(false)}>Cancelar</Boton>
+            <Boton onClick={async () => {
+              setAddingUser(true);
+              setFormError(null);
+              try {
+                if (!userForm.nombre || !userForm.correo || !userForm.contrasena) {
+                  setFormError('Completa todos los campos.');
+                  setAddingUser(false);
+                  return;
+                }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(userForm.correo)) {
+                  setFormError('Por favor ingresa un correo con formato válido (ejemplo@test.com).');
+                  setAddingUser(false);
+                  return;
+                }
+                await apiClient.post('/api/login/agregar_usuario', {
+                  nombre: userForm.nombre,
+                  correo: userForm.correo,
+                  contrasena: userForm.contrasena,
+                  id_rol: userForm.id_rol,
+                });
+                setShowAddUser(false);
+                setUserForm({ nombre: '', correo: '', contrasena: '', id_rol: 1 });
+              } catch (e) {
+                setFormError(e.response?.data?.detail || 'Error al agregar usuario');
+              } finally {
+                setAddingUser(false);
+              }
+            }}>{addingUser ? 'Guardando...' : 'Agregar'}</Boton>
+          </div>
+        </Modal>
+      )}
     </SidebarContainer>
   );
 };
@@ -220,4 +299,10 @@ const NavItem = styled.div`
   &:hover {
     background-color: ${props => props.$active ? props.theme.primaryLight : props.theme.bgHover};
   }
+`;
+
+const ErrorText = styled.div`
+  color: #b91c1c;
+  font-size: 0.9rem;
+  min-height: 1.2rem;
 `;

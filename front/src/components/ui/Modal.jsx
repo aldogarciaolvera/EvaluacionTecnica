@@ -1,8 +1,9 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
-export const Modal = ({ title, children, footer, onClose }) => {
-  return (
+const Modal = ({ title, children, footer, onClose }) => {
+  const el = (
     <Overlay>
       <Dialog role="dialog" aria-modal="true">
         <Header>
@@ -15,6 +16,12 @@ export const Modal = ({ title, children, footer, onClose }) => {
       </Dialog>
     </Overlay>
   );
+
+  if (typeof document !== 'undefined') {
+    return ReactDOM.createPortal(el, document.body);
+  }
+
+  return null;
 };
 
 export default Modal;

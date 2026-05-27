@@ -60,7 +60,7 @@ export default function SalidasPage() {
     }
 
     if (salidaCantidad > selectedProduct.stock) {
-      setFormError('No se puede salir más cantidad que el stock disponible.');
+      setFormError('No puede salir más cantidad que el stock disponible.');
       return;
     }
 
