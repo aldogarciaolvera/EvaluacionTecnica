@@ -1,18 +1,53 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { User, Lock, Eye, EyeOff, LogIn, Shield, Package, Headphones } from 'lucide-react';
+import { User, Lock, Eye, EyeOff, LogIn, Shield, Package, Headphones, Loader2 } from 'lucide-react';
+import { useAuthStore } from '../../store/useAuthStore';
+import apiClient from '../../api/apiClient';
 import Boton from '../ui/Boton';
 import Input from '../ui/Input';
 import SelectorRol from '../ui/SelectorRol';
 
 export const LoginPage = () => {
+  const { setAuth, setError, error } = useAuthStore();
   const [role, setRole] = useState('Administrador');
   const [showPwd, setShowPwd] = useState(false);
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const roleOptions = [
     { label: 'Administrador', value: 'Administrador', icon: Shield },
     { label: 'Almacenista', value: 'Almacenista', icon: Package }
   ];
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!correo || !contrasena) {
+      setError('Por favor ingresa correo y contraseña');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiClient.post('/api/login/auth', {
+        correo,
+        contrasena
+      });
+
+      const { user, access_token } = response.data;
+      
+      // Guardamos en el store y localstorage
+      setAuth(user || { email: correo, role }, access_token);
+      
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Error al iniciar sesión. Verifica tus credenciales.';
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Card>
@@ -21,7 +56,9 @@ export const LoginPage = () => {
         <Subtitulo>Control de Inventario</Subtitulo>
       </Header>
       
-      <Formulario>
+      <Formulario onSubmit={handleLogin}>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        
         <SelectorRol 
           label="Escoge tu Rol de Acceso"
           options={roleOptions}
@@ -33,6 +70,9 @@ export const LoginPage = () => {
           label="Correo"
           placeholder="test@test.com"
           icon={User}
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          required
         />
 
         <Input 
@@ -40,6 +80,9 @@ export const LoginPage = () => {
           type={showPwd ? 'text' : 'password'}
           placeholder="••••••••"
           icon={Lock}
+          value={contrasena}
+          onChange={(e) => setContrasena(e.target.value)}
+          required
           rightElement={
             <button 
               type="button" 
@@ -51,8 +94,8 @@ export const LoginPage = () => {
           }
         />
 
-        <Boton icon={LogIn}>
-          Iniciar Sesión
+        <Boton type="submit" icon={isLoading ? null : LogIn} disabled={isLoading}>
+          {isLoading ? <LoadingIcon size={20} /> : 'Iniciar Sesión'}
         </Boton>
       </Formulario>
     </Card>
@@ -99,12 +142,21 @@ const Formulario = styled.form`
   gap: 1.5rem;
 `;
 
-const ForgotLink = styled.button`
-  background: none;
-  border: none;
-  color: ${props => props.theme.primary};
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  &:hover { text-decoration: underline; }
+const ErrorMessage = styled.div`
+  background-color: #fee2e2;
+  border: 1px solid #f87171;
+  color: #991b1b;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  text-align: center;
 `;
+
+const LoadingIcon = styled(Loader2)`
+  animation: spin 1s linear infinite;
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+
