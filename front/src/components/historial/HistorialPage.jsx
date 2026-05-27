@@ -106,10 +106,11 @@ const TopBar = styled.div`
 `;
 
 const FiltroGroup = styled.div`
-  display: flex;
+  display: grid;
+  margin-left: 4rem;
   align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  gap: 0.75rem;
+  grid-auto-flow: column;
 `;
 
 const FiltroBoton = styled(Boton)`
@@ -161,7 +162,7 @@ const TableMessage = styled.div`
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 1.5fr 1.5fr 1fr 0.8fr 1fr;
+  grid-template-columns: 1.6fr 1.5fr 1fr 0.8fr 1fr;
   padding: 0.8rem 1.25rem;
   border-top: 1px solid ${props => props.theme.border};
   align-items: center;
@@ -179,14 +180,12 @@ const TableRow = styled.div`
   }
 `;
 
-const TypeBadge = styled.span`
-  background: ${props => props.theme.primaryLight};
+const TypeBadge = styled.div`
   color: ${props => (props.$entrada ? props.theme.success : props.theme.error)};
   border-radius: 999px;
-  padding: 0.2rem 0.65rem;
+  padding: 0.4rem 2.5rem;
   font-size: 0.72rem;
   font-weight: 700;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
 `;
