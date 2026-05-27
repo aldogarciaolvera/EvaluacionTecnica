@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from scalar_fastapi import (
     get_scalar_api_reference, 
     Layout,
@@ -16,6 +17,14 @@ app = FastAPI(
     docs_url = None,
     redoc_url = None
     )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/", include_in_schema=False)
 async def scalar_html():
