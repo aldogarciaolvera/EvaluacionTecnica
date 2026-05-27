@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { User, Lock, Eye, EyeOff, LogIn, Shield, Package, Headphones, Loader2 } from 'lucide-react';
+import { User, Lock, Eye, EyeOff, LogIn, Shield, Package, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import apiClient from '../../api/apiClient';
 import Boton from '../ui/Boton';
 import Input from '../ui/Input';
-import SelectorRol from '../ui/SelectorRol';
 
 export const LoginPage = () => {
   const { setAuth, setError, error } = useAuthStore();
@@ -22,25 +21,36 @@ export const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!correo || !contrasena) {
-      setError('Por favor ingresa correo y contraseña');
+    
+    if (!correo.trim() || !contrasena.trim()) {
+      setError('Por favor completa todos los campos.');
+      return;
+    }
+
+    const isAdmin = correo.trim().toLowerCase() === 'admin';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!isAdmin && !emailRegex.test(correo)) {
+      setError('Por favor ingresa un correo con formato válido (ejemplo@test.com).');
       return;
     }
 
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await apiClient.post('/api/login/auth', {
         correo,
         contrasena
       });
 
-      const { user, access_token } = response.data;
-      
-      // Guardamos en el store y localstorage
-      setAuth(user || { email: correo, role }, access_token);
-      
+      const { usuario, access_token, refresh_token, rol } = response.data;
+      const user = {
+        nombre: usuario || correo,
+        correo,
+        rol,
+      };
+
+      setAuth(user, access_token, refresh_token);
     } catch (err) {
       const msg = err.response?.data?.detail || 'Error al iniciar sesión. Verifica tus credenciales.';
       setError(msg);
@@ -58,13 +68,6 @@ export const LoginPage = () => {
       
       <Formulario onSubmit={handleLogin}>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        
-        <SelectorRol 
-          label="Escoge tu Rol de Acceso"
-          options={roleOptions}
-          value={role}
-          onChange={setRole}
-        />
 
         <Input 
           label="Correo"
@@ -72,17 +75,17 @@ export const LoginPage = () => {
           icon={User}
           value={correo}
           onChange={(e) => setCorreo(e.target.value)}
-          required
+          noValidate
         />
 
         <Input 
-          label="Security Password"
+          label="Contraseña"
           type={showPwd ? 'text' : 'password'}
           placeholder="••••••••"
           icon={Lock}
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
-          required
+          noValidate
           rightElement={
             <button 
               type="button" 
@@ -112,11 +115,21 @@ const Card = styled.div`
   width: 100%;
   max-width: 400px;
   overflow: hidden;
+  margin: 1.25rem auto;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    margin: 0.75rem;
+  }
 `;
 
 const Header = styled.div`
   padding: 1rem;
   text-align: center;
+
+  @media (max-width: 480px) {
+    padding: 0.9rem;
+  }
 `;
 
 const Titulo = styled.h1`
@@ -140,6 +153,11 @@ const Formulario = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  @media (max-width: 480px) {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
 `;
 
 const ErrorMessage = styled.div`

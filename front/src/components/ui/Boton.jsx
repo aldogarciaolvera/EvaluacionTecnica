@@ -13,8 +13,8 @@ export const Boton = ({ children, variant = 'primary', icon: Icon, ...props }) =
 export default Boton;
 
 const BotonStyled = styled.button`
-  background-color: ${props => props.$variant === 'primary' ? props.theme.primaryLight : 'transparent'};
-  color: ${props => props.$variant === 'primary' ? '#ffffff' : props.theme.textMain};
+  background-color: ${props => props.$variant === 'primary' ? props.theme.primary : 'transparent'};
+  color: ${props => props.$variant === 'primary' ? props.theme.bgCard : props.theme.textMain};
   border: ${props => props.$variant === 'outline' ? `1px solid ${props.theme.border}` : 'none'};
   padding: 0.75rem 1.5rem;
   border-radius: ${props => props.theme.radiusMd || '8px'};
@@ -29,7 +29,7 @@ const BotonStyled = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: ${props => props.$variant === 'primary' ? props.theme.primary : 'transparent'};
+    background-color: ${props => props.$variant === 'primary' ? props.theme.primaryHover : 'transparent'};
     transform: translateY(-1px);
   }
 
