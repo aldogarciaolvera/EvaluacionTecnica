@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [stockAmount, setStockAmount] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [stockError, setStockError] = useState(null);
   const [adding, setAdding] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [form, setForm] = useState({ nombre: '', descripcion: '', precio: 1 });
@@ -54,12 +55,13 @@ export default function DashboardPage() {
   const handleOpenStockModal = (product) => {
     setSelectedProduct(product);
     setStockAmount(1);
+    setStockError(null);
     setShowStockModal(true);
   };
 
   const handleIncreaseStock = async () => {
     if (!selectedProduct || stockAmount <= 0) {
-      alert('Ingresa una cantidad válida mayor que cero.');
+      setStockError('Ingresa una cantidad válida mayor que cero.');
       return;
     }
 
@@ -197,6 +199,7 @@ export default function DashboardPage() {
             <p style={{ color: '#475569', fontSize: '0.9rem' }}>
               El stock solo puede aumentarse. Ingresa un número mayor que cero.
             </p>
+            {stockError && <ErrorText>{stockError}</ErrorText>}
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
             <Boton variant="outline" onClick={() => setShowStockModal(false)}>Cancelar</Boton>
@@ -415,4 +418,10 @@ const PageButton = styled.button`
   @media (max-width: 768px) {
     min-width: 42px;
   }
+`;
+
+const ErrorText = styled.div`
+  color: #b91c1c;
+  font-size: 0.9rem;
+  min-height: 1.2rem;
 `;
