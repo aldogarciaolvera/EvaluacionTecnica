@@ -46,7 +46,8 @@ def auth(data: LoginRequest, db: Session = Depends(get_db)):
         "refresh_token": refresh,
         "token_type": "bearer",
         "usuario": usuarios.nombre,
-        "rol": usuarios.id_rol
+        "rol": usuarios.id_rol,
+        "id_usuario": usuarios.id_usuario
     }
 
 

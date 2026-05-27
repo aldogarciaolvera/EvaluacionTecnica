@@ -9,3 +9,4 @@ class Historial(Base):
     id_producto = Column(Integer, index=True)
     cantidad = Column(Integer, nullable=False)
     tipo_operacion = Column(String, nullable=False)
+    fecha_operacion = Column(String, nullable=False)

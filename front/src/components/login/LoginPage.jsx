@@ -43,11 +43,12 @@ export const LoginPage = () => {
         contrasena
       });
 
-      const { usuario, access_token, refresh_token, rol } = response.data;
+      const { usuario, access_token, refresh_token, rol, id_usuario } = response.data;
       const user = {
         nombre: usuario || correo,
         correo,
         rol,
+        id_usuario,
       };
 
       setAuth(user, access_token, refresh_token);
