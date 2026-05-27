@@ -1,9 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Search, Bell, HelpCircle, User } from 'lucide-react';
+import { User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
 import BotonTheme from './BotonTheme';
 
 export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const userName = user?.nombre || user?.email || 'Usuario';
+  const userRole = user?.rol ? ` (${user.rol === 1 ? 'Admin' : 'Almacenista'})` : '';
+  const displayName = `${userName}${userRole}`;
+  const containerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
+
   return (
     <SidebarContainer>
       <SidebarHeader>
@@ -11,10 +38,18 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
           <Titulo>Inventario PRO</Titulo>
           <BotonTheme inline />
         </HeaderTop>
-        
-        <Actions>
-          <IconButton><User size={18} /></IconButton>
-        </Actions>
+
+        <UserSection ref={containerRef}>
+          <UserButton onClick={() => setMenuOpen((open) => !open)}>
+            <User size={18} />
+            <UserName>{displayName}</UserName>
+          </UserButton>
+          {menuOpen && (
+            <UserDropdown>
+              <LogoutItem onClick={handleLogout}>Cerrar sesión</LogoutItem>
+            </UserDropdown>
+          )}
+        </UserSection>
       </SidebarHeader>
       
       <SidebarNav>
@@ -34,6 +69,73 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
 };
 
 export default Sidebar;
+
+const UserSection = styled.div`
+  position: relative;
+`;
+
+const UserButton = styled.button`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: none;
+  background: transparent;
+  color: ${props => props.theme.textMain};
+  cursor: pointer;
+  padding: 0.75rem 0.5rem;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: ${props => props.theme.bgHover};
+  }
+`;
+
+const UserName = styled.span`
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const UserDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 180px;
+  background: ${props => props.theme.bgCard};
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+  border: 1px solid ${props => props.theme.border};
+  border-radius: 12px;
+  margin-top: -0.5rem;
+  z-index: 20;
+  overflow: hidden;
+`;
+
+const DropdownItem = styled.button`
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: ${props => props.theme.textMain};
+  text-align: left;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background: ${props => props.theme.bgHover};
+  }
+`;
+
+const LogoutItem = styled(DropdownItem)`
+  color: #dc2626;
+  font-weight: 700;
+
+  &:hover {
+    background: rgba(220, 38, 38, 0.08);
+  }
+`;
 
 const SidebarContainer = styled.aside`
   width: 260px;

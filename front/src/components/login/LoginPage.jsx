@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { User, Lock, Eye, EyeOff, LogIn, Shield, Package, Headphones, Loader2 } from 'lucide-react';
+import { User, Lock, Eye, EyeOff, LogIn, Shield, Package, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import apiClient from '../../api/apiClient';
 import Boton from '../ui/Boton';
@@ -43,9 +43,14 @@ export const LoginPage = () => {
         contrasena
       });
 
-      const { user, access_token } = response.data;
-      
-      setAuth(user || { email: correo, role }, access_token);
+      const { usuario, access_token, refresh_token, rol } = response.data;
+      const user = {
+        nombre: usuario || correo,
+        correo,
+        rol,
+      };
+
+      setAuth(user, access_token, refresh_token);
     } catch (err) {
       const msg = err.response?.data?.detail || 'Error al iniciar sesión. Verifica tus credenciales.';
       setError(msg);
