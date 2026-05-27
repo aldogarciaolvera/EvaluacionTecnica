@@ -29,13 +29,12 @@ export default function PageShell({ title, subtitle, action, activeItem, childre
 
       <ContentArea>
         <TopBar>
-          <MenuButton onClick={() => setIsSidebarOpen(open => !open)} aria-label="Toggle sidebar">
+          <BotonMenu onClick={() => setIsSidebarOpen(open => !open)} aria-label="Toggle sidebar">
             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </MenuButton>
+          </BotonMenu>
           <HeaderContent>
             <HeaderInfo>
-              <PageTitle>{title}</PageTitle>
-              {subtitle ? <PageSubtitle>{subtitle}</PageSubtitle> : null}
+              <TituloPagina>{title}</TituloPagina>
             </HeaderInfo>
             {action ? <HeaderAction>{action}</HeaderAction> : null}
           </HeaderContent>
@@ -72,6 +71,10 @@ const SidebarPanel = styled.div`
   transform: translateX(${props => (props.$open ? '0' : '-100%')});
   transition: transform 0.3s ease;
   z-index: 40;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const ContentArea = styled.div`
@@ -86,9 +89,14 @@ const TopBar = styled.div`
   justify-content: space-between;
   padding: 0.75rem 1.5rem 0;
   gap: 1.25rem;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem 0;
+  }
 `;
 
-const MenuButton = styled.button`
+const BotonMenu = styled.button`
   width: 40px;
   height: 40px;
   margin-top: 0.25rem;
@@ -108,6 +116,11 @@ const HeaderContent = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 const HeaderInfo = styled.div`
@@ -117,18 +130,22 @@ const HeaderInfo = styled.div`
 const HeaderAction = styled.div`
   display: flex;
   align-items: center;
+
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+  }
 `;
 
-const PageTitle = styled.h1`
+const TituloPagina = styled.h1`
   font-size: 1.85rem;
   font-weight: 800;
   margin: 0 0 0.5rem 1rem;
   color: ${props => props.theme.textTitle};
-`;
 
-const PageSubtitle = styled.p`
-  margin: 0 0 0 1rem;
-  color: ${props => props.theme.textMuted};
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin: 0;
+  }
 `;
 
 const MainContent = styled.main`
@@ -136,4 +153,8 @@ const MainContent = styled.main`
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 1rem 1rem 1.5rem;
+  }
 `;

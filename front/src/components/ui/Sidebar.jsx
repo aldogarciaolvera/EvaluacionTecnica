@@ -8,7 +8,7 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
     <SidebarContainer>
       <SidebarHeader>
         <HeaderTop>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Inventario PRO</h2>
+          <Titulo>Inventario PRO</Titulo>
           <BotonTheme inline />
         </HeaderTop>
         
@@ -46,6 +46,12 @@ const SidebarContainer = styled.aside`
   position: sticky;
   top: 0;
   overflow-y: auto;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    min-height: 100%;
+    position: relative;
+  }
 `;
 
 const SidebarHeader = styled.div`
@@ -53,6 +59,10 @@ const SidebarHeader = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const HeaderTop = styled.div`
@@ -60,6 +70,13 @@ const HeaderTop = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+`;
+
+const Titulo = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 ;
+  color: ${props => props.theme.primary};
 `;
 
 const Actions = styled.div`

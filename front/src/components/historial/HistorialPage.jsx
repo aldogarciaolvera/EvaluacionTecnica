@@ -74,6 +74,12 @@ const FiltersCard = styled(PageCard)`
 	gap: 1rem;
 	align-items: end;
 	margin-bottom: 1.5rem;
+
+	@media (max-width: 768px) {
+		grid-template-columns: 1fr;
+		align-items: stretch;
+		margin-bottom: 1rem;
+	}
 `;
 
 const FilterGroup = styled.div`
@@ -101,6 +107,11 @@ const FilterField = styled.div`
 const FilterActions = styled.div`
 	display: flex;
 	gap: 0.75rem;
+
+	@media (max-width: 520px) {
+		flex-direction: column;
+		align-items: stretch;
+	}
 `;
 
 const GhostButton = styled.button`
@@ -117,6 +128,10 @@ const GhostButton = styled.button`
 
 const TableCard = styled(PageCard)`
 	overflow: hidden;
+
+	@media (max-width: 768px) {
+		overflow-x: auto;
+	}
 `;
 
 const TableHeader = styled.div`
@@ -128,6 +143,10 @@ const TableHeader = styled.div`
 	font-size: 0.75rem;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
+
+	@media (max-width: 768px) {
+		display: none;
+	}
 `;
 
 const TableRow = styled.div`
@@ -138,6 +157,17 @@ const TableRow = styled.div`
 	align-items: center;
 	font-size: 0.9rem;
 	color: ${props => props.theme.textMain};
+
+	@media (max-width: 768px) {
+		grid-template-columns: 1fr;
+		padding: 1rem;
+		gap: 0.75rem;
+		border-radius: 14px;
+		margin: 0.75rem;
+		background: ${props => props.theme.bgPage};
+		border: 1px solid ${props => props.theme.border};
+		grid-template-columns: 1fr;
+	}
 `;
 
 const TypeBadge = styled.span`
@@ -148,6 +178,10 @@ const TypeBadge = styled.span`
 	font-size: 0.75rem;
 	font-weight: 600;
 	text-align: center;
+
+	@media (max-width: 768px) {
+		display: inline-flex;
+	}
 `;
 
 const Quantity = styled.span`
@@ -161,4 +195,9 @@ const StatusDot = styled.span`
 	border-radius: 999px;
 	justify-self: start;
 	background: ${props => (props.$variant === 'ok' ? props.theme.success : props.theme.warningText)};
+
+	@media (max-width: 768px) {
+		width: 10px;
+		height: 10px;
+	}
 `;

@@ -110,11 +110,21 @@ const Card = styled.div`
   width: 100%;
   max-width: 400px;
   overflow: hidden;
+  margin: 1.25rem auto;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    margin: 0.75rem;
+  }
 `;
 
 const Header = styled.div`
   padding: 1rem;
   text-align: center;
+
+  @media (max-width: 480px) {
+    padding: 0.9rem;
+  }
 `;
 
 const Titulo = styled.h1`
@@ -138,6 +148,11 @@ const Formulario = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  @media (max-width: 480px) {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
 `;
 
 const ErrorMessage = styled.div`

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Plus, Filter, Download, MoreVertical } from 'lucide-react';
+import { Plus, MoreVertical } from 'lucide-react';
 import PageShell from '../ui/PageShell';
 import Boton from '../ui/Boton';
 
@@ -15,7 +15,6 @@ export default function DashboardPage() {
   return (
     <PageShell
       title="Inventario Principal"
-      subtitle="Gestion centralizada de existencias y SKUs operativos."
       activeItem="Inventario"
       action={<Boton icon={Plus}>Añadir Producto</Boton>}
     >
@@ -25,8 +24,6 @@ export default function DashboardPage() {
           <Tab>Inactivos (42)</Tab>
         </Tabs>
         <TabActions>
-          <GhostButton><Filter size={16} />Filter</GhostButton>
-          <GhostButton><Download size={16} />Export</GhostButton>
         </TabActions>
       </TabRow>
 
@@ -92,11 +89,22 @@ const TabRow = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid ${props => props.theme.border};
   margin-bottom: 1.25rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
 `;
 
 const Tabs = styled.div`
   display: flex;
   gap: 2rem;
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
 `;
 
 const Tab = styled.button`
@@ -112,18 +120,11 @@ const Tab = styled.button`
 const TabActions = styled.div`
   display: flex;
   gap: 0.75rem;
-`;
 
-const GhostButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #ffffff;
-  border: 1px solid ${props => props.theme.border};
-  color: ${props => props.theme.textMain};
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 `;
 
 const TableCard = styled.div`
@@ -131,6 +132,7 @@ const TableCard = styled.div`
   border: 1px solid ${props => props.theme.border};
   border-radius: 12px;
   overflow: hidden;
+  overflow-x: auto;
 `;
 
 const TableHeader = styled.div`
@@ -142,6 +144,10 @@ const TableHeader = styled.div`
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const TableRow = styled.div`
@@ -151,12 +157,42 @@ const TableRow = styled.div`
   border-top: 1px solid ${props => props.theme.border};
   align-items: center;
   font-size: 0.9rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 0.75rem;
+    border-radius: 14px;
+    margin: 0.75rem;
+    background: ${props => props.theme.bgPage};
+    border: 1px solid ${props => props.theme.border};
+
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+    }
+
+    > div:nth-child(1):before { content: 'Producto'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > div:nth-child(2):before { content: 'SKU'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > div:nth-child(3):before { content: 'Categoria'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > div:nth-child(4):before { content: 'Stock'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > div:nth-child(5):before { content: 'Estado'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+    > div:nth-child(6):before { content: 'Acciones'; display: block; color: ${props => props.theme.textMuted}; font-size: 0.75rem; margin-bottom: 0.35rem; }
+  }
 `;
 
 const ProductCell = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const ProductThumb = styled.div`
@@ -193,12 +229,19 @@ const Pagination = styled.div`
   background: #f8fafc;
   color: ${props => props.theme.textMuted};
   font-size: 0.8rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
 `;
 
 const PaginationNumbers = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 `;
 
 const PageButton = styled.button`
@@ -209,6 +252,10 @@ const PageButton = styled.button`
   background: ${props => (props.$active ? props.theme.primary : '#ffffff')};
   color: ${props => (props.$active ? '#ffffff' : props.theme.textMain)};
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    min-width: 42px;
+  }
 `;
 
 const StatsGrid = styled.div`
