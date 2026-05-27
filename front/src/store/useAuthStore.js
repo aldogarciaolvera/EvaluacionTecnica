@@ -7,12 +7,13 @@ export const useAuthStore = create((set) => ({
   error: null,
 
   setAuth: (user, token) => {
-    localStorage.setItem('auth_token', token);
+    const normalizedToken = token?.startsWith('Bearer ') ? token.slice(7) : token;
+    localStorage.setItem('auth_token', normalizedToken);
     localStorage.setItem('auth_user', JSON.stringify(user));
     set({
       isAuthenticated: true,
       user,
-      token,
+      token: normalizedToken,
       error: null,
     });
   },
