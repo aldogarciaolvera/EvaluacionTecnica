@@ -71,12 +71,6 @@ export default function SalidasPage() {
       await apiClient.put(`/api/productos/salida_producto/${selectedProduct.id_producto}`, {
         cantidad: salidaCantidad,
       });
-      await apiClient.post('/api/movimientos/movimiento_historico', {
-        id_usuario: user?.id_usuario,
-        id_producto: selectedProduct.id_producto,
-        cantidad: salidaCantidad,
-        tipo_operacion: 'SALIDA',
-      });
       setShowSalidaModal(false);
       setSelectedProduct(null);
       await fetchProducts();

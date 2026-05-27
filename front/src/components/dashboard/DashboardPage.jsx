@@ -68,12 +68,6 @@ export default function DashboardPage() {
       await apiClient.put(`/api/productos/incrementar_stock/${selectedProduct.id_producto}`, {
         cantidad: stockAmount,
       });
-      await apiClient.post('/api/movimientos/movimiento_historico', {
-        id_usuario: user?.id_usuario,
-        id_producto: selectedProduct.id_producto,
-        cantidad: stockAmount,
-        tipo_operacion: 'ENTRADA',
-      });
       setShowStockModal(false);
       setSelectedProduct(null);
       await fetchProducts();
