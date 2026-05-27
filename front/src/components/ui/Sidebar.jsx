@@ -23,6 +23,7 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
   const [showAddUser, setShowAddUser] = React.useState(false);
   const [userForm, setUserForm] = React.useState({ nombre: '', correo: '', contrasena: '', id_rol: 1 });
   const [formError, setFormError] = React.useState(null);
+  const [formSuccess, setFormSuccess] = React.useState(null);
   const [addingUser, setAddingUser] = React.useState(false);
   const [showPwdUser, setShowPwdUser] = React.useState(false);
 
@@ -42,6 +43,16 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
     navigate('/login', { replace: true });
   };
 
+  const filteredItems = items.filter((item) => {
+    if (user?.rol === 1) {
+      return item.path !== '/salidas';
+    }
+    if (user?.rol === 2) {
+      return item.path === '/salidas';
+    }
+    return false;
+  });
+
   return (
     <SidebarContainer>
       <SidebarHeader>
@@ -58,7 +69,14 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
           {menuOpen && (
             <UserDropdown>
               {user?.rol === 1 && (
-                <DropdownItem onClick={() => { setMenuOpen(false); setShowAddUser(true); }}>
+                <DropdownItem onClick={() => {
+                  setMenuOpen(false);
+                  setShowAddUser(true);
+                  setFormError(null);
+                  setFormSuccess(null);
+                  setShowPwdUser(false);
+                  setUserForm({ nombre: '', correo: '', contrasena: '', id_rol: 1 });
+                }}>
                   Agregar usuario
                 </DropdownItem>
               )}
@@ -69,7 +87,7 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
       </SidebarHeader>
       
       <SidebarNav>
-        {items.map(item => (
+        {filteredItems.map(item => (
           <NavItem
             key={item.label}
             $active={activeItem === item.label}
@@ -108,6 +126,7 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
               onChange={(val) => setUserForm(f => ({ ...f, id_rol: val }))}
             />
             {formError && <ErrorText>{formError}</ErrorText>}
+            {formSuccess && <SuccessText>{formSuccess}</SuccessText>}
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
             <Boton variant="outline" onClick={() => setShowAddUser(false)}>Cancelar</Boton>
@@ -132,10 +151,16 @@ export const Sidebar = ({ items = [], activeItem, onItemClick }) => {
                   contrasena: userForm.contrasena,
                   id_rol: userForm.id_rol,
                 });
-                setShowAddUser(false);
+                setFormSuccess('Usuario agregado exitosamente.');
+                setFormError(null);
                 setUserForm({ nombre: '', correo: '', contrasena: '', id_rol: 1 });
+                setTimeout(() => {
+                  setShowAddUser(false);
+                  setFormSuccess(null);
+                }, 1600);
               } catch (e) {
                 setFormError(e.response?.data?.detail || 'Error al agregar usuario');
+                setFormSuccess(null);
               } finally {
                 setAddingUser(false);
               }
@@ -303,6 +328,16 @@ const NavItem = styled.div`
 
 const ErrorText = styled.div`
   color: #b91c1c;
+  font-size: 0.9rem;
+  min-height: 1.2rem;
+`;
+
+const SuccessText = styled.div`
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  padding: 0.75rem 0.95rem;
+  border-radius: 10px;
   font-size: 0.9rem;
   min-height: 1.2rem;
 `;

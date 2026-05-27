@@ -15,8 +15,9 @@ import Boton from './components/ui/Boton';
 
 function App() {
   const { theme } = useThemeStore();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+  const userRole = user?.rol;
 
   // Idle handler: if user is authenticated we start the idle timer and logout on timeout
   // We need a nested component to use navigation hooks inside Router
@@ -71,19 +72,19 @@ function App() {
               />
               <Route
                 path="/dashboard"
-                element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login" replace />}
+                element={isAuthenticated && userRole === 1 ? <DashboardPage /> : <Navigate to={isAuthenticated ? (userRole === 2 ? '/salidas' : '/login') : '/login'} replace />}
               />
               <Route
                 path="/salidas"
-                element={isAuthenticated ? <SalidasPage /> : <Navigate to="/login" replace />}
+                element={isAuthenticated && userRole === 2 ? <SalidasPage /> : <Navigate to={isAuthenticated ? (userRole === 1 ? '/dashboard' : '/login') : '/login'} replace />}
               />
               <Route
                 path="/historial"
-                element={isAuthenticated ? <HistorialPage /> : <Navigate to="/login" replace />}
+                element={isAuthenticated && userRole === 1 ? <HistorialPage /> : <Navigate to={isAuthenticated ? (userRole === 2 ? '/salidas' : '/login') : '/login'} replace />}
               />
               <Route
                 path="*"
-                element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />}
+                element={<Navigate to={isAuthenticated ? (userRole === 2 ? '/salidas' : '/dashboard') : '/login'} replace />}
               />
             </Routes>
           </RoutesContainer>

@@ -69,6 +69,10 @@ def refresh_token(data: RefreshRequest):
 
 @login_router.post("/agregar_usuario")
 def agregar_usuario(data: NuevoUsuario, db: Session = Depends(get_db), usuarios = Depends(verify_token)):
+    existente = db.query(Usuario).filter(Usuario.correo == data.correo).first()
+    if existente:
+        raise HTTPException(status_code=400, detail="El correo ya está registrado")
+
     nuevo_usuario = Usuario(
         nombre = data.nombre,
         correo = data.correo,
