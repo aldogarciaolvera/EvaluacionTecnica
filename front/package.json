@@ -1,7 +1,8 @@
 {
-  "name": "evaluaciontecninca",
+  "name": "inventario-pro",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "description": "Frontend de Inventario PRO - React + Vite",
   "type": "module",
   "scripts": {
     "dev": "vite",
