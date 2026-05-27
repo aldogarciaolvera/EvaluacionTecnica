@@ -75,7 +75,7 @@ def agregar_usuario(data: NuevoUsuario, db: Session = Depends(get_db), usuarios 
         contrasena = hash_password(data.contrasena),
         id_rol = data.id_rol,  
         id_estatus = 1,
-        fecha_creacion = datetime()
+        fecha_creacion = datetime.now().isoformat()
     )
     
     db.add(nuevo_usuario)
