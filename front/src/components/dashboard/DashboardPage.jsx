@@ -233,7 +233,7 @@ const TableCard = styled.div`
 
 const TableHeader = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1.3fr 1fr 1.1fr 1.1fr 0.5fr;
+  grid-template-columns: 2fr 1fr 1.3fr 1fr 1fr 1.1fr 0.5fr;
   padding: 0.75rem 1.5rem;
   background: #f8fafc;
   color: ${props => props.theme.textMuted};
@@ -256,7 +256,7 @@ const TableMessage = styled.div`
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1.3fr 1fr 1fr 0.8fr 1.2fr;
+  grid-template-columns: 2fr 1fr 1.3fr 1fr 1fr 0.8fr 1fr;
   padding: 1rem 1.5rem;
   border-top: 1px solid ${props => props.theme.border};
   align-items: center;

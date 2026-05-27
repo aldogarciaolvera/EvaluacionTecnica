@@ -69,3 +69,28 @@ def incrementar_stock(id_producto: int, data: StockUpdate, db: Session = Depends
         "message": "Stock actualizado correctamente",
         "stock": producto.stock,
     }
+
+
+@products_router.put("/salida_producto/{id_producto}")
+def salida_producto(id_producto: int, data: StockUpdate, db: Session = Depends(get_db), usuario = Depends(rol_requerido([1, 2]))):
+    producto = db.query(Producto).filter(Producto.id_producto == id_producto).first()
+    if not producto:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+
+    if producto.id_estatus != 1:
+        raise HTTPException(status_code=400, detail="Solo se pueden registrar salidas de productos activos")
+
+    if data.cantidad <= 0:
+        raise HTTPException(status_code=400, detail="La cantidad debe ser mayor que cero")
+
+    if producto.stock < data.cantidad:
+        raise HTTPException(status_code=400, detail="Stock insuficiente para salida")
+
+    producto.stock = producto.stock - data.cantidad
+    db.commit()
+    db.refresh(producto)
+
+    return {
+        "message": "Salida registrada correctamente",
+        "stock_actual": producto.stock,
+    }
