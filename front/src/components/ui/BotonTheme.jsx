@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { Sun, Moon } from 'lucide-react';
 import { useThemeStore } from '../../store/useThemeStore';
 
-export const BotonTheme = () => {
+export const BotonTheme = ({ inline = false }) => {
   const { theme, toggleTheme } = useThemeStore();
 
   return (
     <BotonThemeStyled 
+      $inline={inline}
       onClick={toggleTheme} 
-            title={`Cambiar a tema ${theme === 'light' ? 'oscuro' : 'claro'}`}
+      title={`Cambiar a tema ${theme === 'light' ? 'oscuro' : 'claro'}`}
       aria-label="Toggle theme"
     >
       {theme === 'light' ? (
@@ -24,9 +25,9 @@ export const BotonTheme = () => {
 export default BotonTheme;
 
 const BotonThemeStyled = styled.button`
-  position: fixed;
-  top: 1.25rem;
-  right: 1.25rem;
+  position: ${props => (props.$inline ? 'static' : 'fixed')};
+  top: ${props => (props.$inline ? 'auto' : '1.25rem')};
+  right: ${props => (props.$inline ? 'auto' : '1.25rem')};
   background: ${props => props.theme.themeName === 'light' 
     ? 'rgba(255, 255, 255, 0.8)' 
     : 'rgba(30, 41, 59, 0.7)'};
@@ -35,15 +36,15 @@ const BotonThemeStyled = styled.button`
   border: 1px solid ${props => props.theme.border};
   color: ${props => props.theme.textTitle};
   border-radius: 12px;
-  width: 44px;
-  height: 44px;
+  width: ${props => (props.$inline ? '36px' : '44px')};
+  height: ${props => (props.$inline ? '36px' : '44px')};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
+  z-index: ${props => (props.$inline ? 'auto' : '1000')};
 
   &:hover {
     transform: translateY(-2px);

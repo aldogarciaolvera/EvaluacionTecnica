@@ -5,7 +5,6 @@ import { useAuthStore } from '../../store/useAuthStore';
 import apiClient from '../../api/apiClient';
 import Boton from '../ui/Boton';
 import Input from '../ui/Input';
-import SelectorRol from '../ui/SelectorRol';
 
 export const LoginPage = () => {
   const { setAuth, setError, error } = useAuthStore();
@@ -22,8 +21,18 @@ export const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!correo || !contrasena) {
-      setError('Por favor ingresa correo y contraseña');
+    
+    if (!correo.trim() || !contrasena.trim()) {
+      setError('Por favor completa todos los campos.');
+      return;
+    }
+
+    // Excepción para el usuario admin que no tiene formato de correo
+    const isAdmin = correo.trim().toLowerCase() === 'admin';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!isAdmin && !emailRegex.test(correo)) {
+      setError('Por favor ingresa un correo con formato válido (ejemplo@test.com).');
       return;
     }
 
@@ -58,13 +67,6 @@ export const LoginPage = () => {
       
       <Formulario onSubmit={handleLogin}>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        
-        <SelectorRol 
-          label="Escoge tu Rol de Acceso"
-          options={roleOptions}
-          value={role}
-          onChange={setRole}
-        />
 
         <Input 
           label="Correo"
@@ -72,17 +74,17 @@ export const LoginPage = () => {
           icon={User}
           value={correo}
           onChange={(e) => setCorreo(e.target.value)}
-          required
+          noValidate
         />
 
         <Input 
-          label="Security Password"
+          label="Contraseña"
           type={showPwd ? 'text' : 'password'}
           placeholder="••••••••"
           icon={Lock}
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
-          required
+          noValidate
           rightElement={
             <button 
               type="button" 
