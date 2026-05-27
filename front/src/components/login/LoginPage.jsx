@@ -27,7 +27,6 @@ export const LoginPage = () => {
       return;
     }
 
-    // Excepción para el usuario admin que no tiene formato de correo
     const isAdmin = correo.trim().toLowerCase() === 'admin';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
@@ -38,7 +37,6 @@ export const LoginPage = () => {
 
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await apiClient.post('/api/login/auth', {
         correo,
@@ -47,9 +45,7 @@ export const LoginPage = () => {
 
       const { user, access_token } = response.data;
       
-      // Guardamos en el store y localstorage
       setAuth(user || { email: correo, role }, access_token);
-      
     } catch (err) {
       const msg = err.response?.data?.detail || 'Error al iniciar sesión. Verifica tus credenciales.';
       setError(msg);

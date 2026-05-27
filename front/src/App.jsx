@@ -6,6 +6,8 @@ import { useThemeStore } from './store/useThemeStore';
 import { lightTheme, darkTheme } from './theme/theme';
 import LoginPage from './components/login/LoginPage';
 import DashboardPage from './components/dashboard/DashboardPage';
+import SalidasPage from './components/salidas/SalidasPage';
+import HistorialPage from './components/historial/HistorialPage';
 
 function App() {
   const { theme } = useThemeStore();
@@ -26,6 +28,14 @@ function App() {
               <Route
                 path="/dashboard"
                 element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login" replace />}
+              />
+              <Route
+                path="/salidas"
+                element={isAuthenticated ? <SalidasPage /> : <Navigate to="/login" replace />}
+              />
+              <Route
+                path="/historial"
+                element={isAuthenticated ? <HistorialPage /> : <Navigate to="/login" replace />}
               />
               <Route
                 path="*"

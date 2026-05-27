@@ -1,92 +1,90 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { LayoutGrid, Users, Truck, History, Plus, Filter, Download, MoreVertical, Menu, X } from 'lucide-react';
-import Sidebar from '../ui/Sidebar';
+import { Plus, Filter, Download, MoreVertical } from 'lucide-react';
+import PageShell from '../ui/PageShell';
 import Boton from '../ui/Boton';
 
-const MainLayout = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${props => props.theme.bgPage};
-`;
+export default function DashboardPage() {
+  const rows = [
+    { name: 'Precision Actuator X-500', sku: 'PA-500-RED-01', category: 'Electronics / High-Val', stock: '482 units', status: 'active' },
+    { name: 'Titanium Fastener Kit', sku: 'TF-KIT-44', category: 'Hardware / Aerospace', stock: '12 units', status: 'reserved' },
+    { name: 'Li-Ion Storage Module', sku: 'BATT-MOD-9X', category: 'Power Systems', stock: '1,024 units', status: 'active' },
+    { name: 'Fiber Optic Cable Reel', sku: 'CBL-FIB-100', category: 'Connectivity', stock: '250 units', status: 'inactive' }
+  ];
 
-const ContentArea = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
+  return (
+    <PageShell
+      title="Inventario Principal"
+      subtitle="Gestion centralizada de existencias y SKUs operativos."
+      activeItem="Inventario"
+      action={<Boton icon={Plus}>Añadir Producto</Boton>}
+    >
+      <TabRow>
+        <Tabs>
+          <Tab $active>Activos (1,284)</Tab>
+          <Tab>Inactivos (42)</Tab>
+        </Tabs>
+        <TabActions>
+          <GhostButton><Filter size={16} />Filter</GhostButton>
+          <GhostButton><Download size={16} />Export</GhostButton>
+        </TabActions>
+      </TabRow>
 
-const MobileTopBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1.5rem 0;
-  gap: 1.25rem;
-`;
+      <TableCard>
+        <TableHeader>
+          <div>Product Name</div>
+          <div>SKU</div>
+          <div>Category</div>
+          <div>Stock Level</div>
+          <div>Status</div>
+          <div>Actions</div>
+        </TableHeader>
+        {rows.map((row) => (
+          <TableRow key={row.sku}>
+            <ProductCell>
+              <ProductThumb />
+              <div>{row.name}</div>
+            </ProductCell>
+            <SkuTag>{row.sku}</SkuTag>
+            <div>{row.category}</div>
+            <div>{row.stock}</div>
+            <StatusPill $variant={row.status}>{row.status}</StatusPill>
+            <div><MoreVertical size={16} /></div>
+          </TableRow>
+        ))}
+        <Pagination>
+          <div>Showing 1 to 4 of 1,284 products</div>
+          <PaginationNumbers>
+            <PageButton>&lt;</PageButton>
+            <PageButton $active>1</PageButton>
+            <PageButton>2</PageButton>
+            <PageButton>3</PageButton>
+            <span>...</span>
+            <PageButton>321</PageButton>
+            <PageButton>&gt;</PageButton>
+          </PaginationNumbers>
+        </Pagination>
+      </TableCard>
 
-const HeaderContent = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-`;
+      <StatsGrid>
+        <StatCard>
+          <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Stock Value</h4>
+          <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>$1.2M</p>
+        </StatCard>
+        <StatCard>
+          <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Low Stock Alerts</h4>
+          <p style={{ fontSize: '1.8rem', fontWeight: 800, color: '#ef4444' }}>18</p>
+        </StatCard>
+        <StatCard>
+          <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Inventory Accuracy</h4>
+          <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>99.8%</p>
+        </StatCard>
+      </StatsGrid>
+    </PageShell>
+  );
+}
 
-const HeaderInfo = styled.div`
-  min-width: 0;
-`;
 
-const MenuButton = styled.button`
-  width: 40px;
-  height: 40px;
-  margin-top: 0.25rem;
-  border-radius: 10px;
-  border: 1px solid ${props => props.theme.border};
-  background: ${props => props.theme.bgCard};
-  color: ${props => props.theme.textMain};
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-
-const SidebarOverlay = styled.div`
-  display: ${props => (props.$open ? 'block' : 'none')};
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  z-index: 30;
-`;
-
-const SidebarPanel = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 260px;
-  transform: translateX(${props => (props.$open ? '0' : '-100%')});
-  transition: transform 0.3s ease;
-  z-index: 40;
-`;
-
-const MainContent = styled.main`
-  padding: 1rem 2rem 2rem;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-`;
-
-const Title = styled.h1`
-  font-size: 1.85rem;
-  font-weight: 800;
-  margin: 0 0 0.25rem 0;
-`;
-
-const Subtitle = styled.p`
-  margin: 0;
-  color: ${props => props.theme.textMuted};
-`;
 
 const TabRow = styled.div`
   display: flex;
@@ -227,112 +225,3 @@ const StatCard = styled.div`
   padding: 1.5rem;
   box-shadow: ${props => props.theme.shadowCard};
 `;
-
-export default function DashboardPage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const sidebarItems = [
-    { label: 'Inventory', icon: LayoutGrid },
-    { label: 'Management', icon: Users },
-    { label: 'Shipping', icon: Truck },
-    { label: 'History', icon: History }
-  ];
-
-  const rows = [
-    { name: 'Precision Actuator X-500', sku: 'PA-500-RED-01', category: 'Electronics / High-Val', stock: '482 units', status: 'active' },
-    { name: 'Titanium Fastener Kit', sku: 'TF-KIT-44', category: 'Hardware / Aerospace', stock: '12 units', status: 'reserved' },
-    { name: 'Li-Ion Storage Module', sku: 'BATT-MOD-9X', category: 'Power Systems', stock: '1,024 units', status: 'active' },
-    { name: 'Fiber Optic Cable Reel', sku: 'CBL-FIB-100', category: 'Connectivity', stock: '250 units', status: 'inactive' }
-  ];
-
-  return (
-    <MainLayout>
-      <SidebarOverlay $open={isSidebarOpen} onClick={() => setIsSidebarOpen(false)} />
-      <SidebarPanel $open={isSidebarOpen}>
-        <Sidebar
-          items={sidebarItems}
-          activeItem="Inventory"
-          onItemClick={() => setIsSidebarOpen(false)}
-        />
-      </SidebarPanel>
-      <ContentArea>
-        <MobileTopBar>
-          <MenuButton onClick={() => setIsSidebarOpen(open => !open)} aria-label="Toggle sidebar">
-            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </MenuButton>
-          <HeaderContent>
-            <HeaderInfo>
-              <Title>Inventario Principal</Title>
-              <Subtitle>Gestion centralizada de existencias y SKUs operativos.</Subtitle>
-            </HeaderInfo>
-            <div style={{ width: '180px' }}>
-              <Boton icon={Plus}>Add Product</Boton>
-            </div>
-          </HeaderContent>
-        </MobileTopBar>
-        <MainContent>
-          <TabRow>
-            <Tabs>
-              <Tab $active>Activos (1,284)</Tab>
-              <Tab>Inactivos (42)</Tab>
-            </Tabs>
-            <TabActions>
-              <GhostButton><Filter size={16} />Filter</GhostButton>
-              <GhostButton><Download size={16} />Export</GhostButton>
-            </TabActions>
-          </TabRow>
-
-          <TableCard>
-            <TableHeader>
-              <div>Product Name</div>
-              <div>SKU</div>
-              <div>Category</div>
-              <div>Stock Level</div>
-              <div>Status</div>
-              <div>Actions</div>
-            </TableHeader>
-            {rows.map((row) => (
-              <TableRow key={row.sku}>
-                <ProductCell>
-                  <ProductThumb />
-                  <div>{row.name}</div>
-                </ProductCell>
-                <SkuTag>{row.sku}</SkuTag>
-                <div>{row.category}</div>
-                <div>{row.stock}</div>
-                <StatusPill $variant={row.status}>{row.status}</StatusPill>
-                <div><MoreVertical size={16} /></div>
-              </TableRow>
-            ))}
-            <Pagination>
-              <div>Showing 1 to 4 of 1,284 products</div>
-              <PaginationNumbers>
-                <PageButton>&lt;</PageButton>
-                <PageButton $active>1</PageButton>
-                <PageButton>2</PageButton>
-                <PageButton>3</PageButton>
-                <span>...</span>
-                <PageButton>321</PageButton>
-                <PageButton>&gt;</PageButton>
-              </PaginationNumbers>
-            </Pagination>
-          </TableCard>
-
-          <StatsGrid>
-            <StatCard>
-              <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Stock Value</h4>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>$1.2M</p>
-            </StatCard>
-            <StatCard>
-              <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Low Stock Alerts</h4>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, color: '#ef4444' }}>18</p>
-            </StatCard>
-            <StatCard>
-              <h4 style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Inventory Accuracy</h4>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>99.8%</p>
-            </StatCard>
-          </StatsGrid>
-        </MainContent>
-      </ContentArea>
-    </MainLayout>
-  );
-}
