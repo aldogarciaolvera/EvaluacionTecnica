@@ -35,8 +35,8 @@ Esta aplicación cubre un flujo de inventario con control de roles:
 
 ## Project URL
 
-Visita la aplicación en: [https://evaluaciontecnica.atomsystems.org/](https://evaluaciontecnica.atomsystems.org/)
-Asi como el Video de Demostracion: 
+- Visita la aplicación en: [https://evaluaciontecnica.atomsystems.org/](https://evaluaciontecnica.atomsystems.org/)
+- Visita el Video de Demostracion: [https://drive.google.com/file/d/1TOhGLJLNEqBPIguG7t_o0i9QoUCgvn3_/view?usp=sharing](https://drive.google.com/file/d/1TOhGLJLNEqBPIguG7t_o0i9QoUCgvn3_/view?usp=sharing)
 
 ## Requisitos generales
 
