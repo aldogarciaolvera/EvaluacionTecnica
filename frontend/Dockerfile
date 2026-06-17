@@ -18,7 +18,7 @@ RUN pnpm run build
 ### Production stage: serve static files with nginx
 FROM nginx:stable-alpine
 
-LABEL org.opencontainers.image.source="EvaluacionTecnica/front"
+LABEL org.opencontainers.image.source="EvaluacionTecnica/frontend"
 
 # Remove default nginx content and copy build
 RUN rm -rf /usr/share/nginx/html/*

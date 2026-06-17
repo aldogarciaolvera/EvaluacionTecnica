@@ -5,8 +5,8 @@
 
 Solución completa de un sistema de inventario con:
 
-- **Backend** en `back/` usando FastAPI, SQLAlchemy y JWT.
-- **Frontend** en `front/` usando React, Vite y Styled-components.
+- **Backend** en `backend/` usando FastAPI, SQLAlchemy y JWT.
+- **Frontend** en `frontend/` usando React, Vite y Styled-components.
 - **Base de datos** modelada con MySQL y scripts SQL para creación y datos iniciales.
 - **IDE** todo el proyecto fue desarrollado con VsCode. Apoyado de Stitch para los diseños.
 
@@ -22,20 +22,20 @@ Esta aplicación cubre un flujo de inventario con control de roles:
 ## Contenido del repositorio
 
 - `README.md`: visión general y guía rápida.
-- `back/`: backend FastAPI.
-- `front/`: frontend React + Vite.
+- `backend/`: backend FastAPI.
+- `frontend/`: frontend React + Vite.
 - `scripts/`: SQL para crear tablas, relaciones y datos iniciales.
 - `Respuestas_Evaluacion_Practica.pdf`: respuestas del cuestionario SQL.
 - `Diagrama_BD.png`: diagrama relacional del modelo de datos.
 
 ## Documentación detallada
 
-- Backend: [back/README.md](back/README.md)
-- Frontend: [front/README.md](front/README.md)
+- Backend: [backend/README.md](backend/README.md)
+- Frontend: [frontend/README.md](frontend/README.md)
 
 ## Project URL
 
-- Visita la aplicación en: [https://evaluaciontecnica.atomsystems.org/](https://evaluaciontecnica.atomsystems.org/)
+- Visita la aplicación en: [https://evaluacion_tecnica_castores.atomsystems.org/](https://evaluacion_tecnica_castores.atomsystems.org/)
 - Visita el Video de Demostracion: [https://drive.google.com/file/d/1TOhGLJLNEqBPIguG7t_o0i9QoUCgvn3_/view?usp=sharing](https://drive.google.com/file/d/1TOhGLJLNEqBPIguG7t_o0i9QoUCgvn3_/view?usp=sharing)
 
 ## Requisitos generales
@@ -60,29 +60,29 @@ Esto crea las tablas, relaciones y datos iniciales requeridos para el funcionami
 
 ### Backend
 
-1. Ir a la carpeta `back/`.
+1. Ir a la carpeta `backend/`.
 2. Crear y activar un entorno virtual.
 3. Instalar dependencias:
 
 ```bash
-cd back
+cd backend
 pip install -r requirements.txt
 ```
 
 4. Ejecutar el servidor:
 
 ```bash
-cd back/app
+cd backend/app
 uvicorn main:app --reload --port 8001
 ```
 
 ### Frontend
 
-1. Ir a la carpeta `front/`.
+1. Ir a la carpeta `frontend/`.
 2. Instalar dependencias:
 
 ```bash
-cd front
+cd frontend
 pnpm install
 ```
 
@@ -98,7 +98,7 @@ pnpm dev
 
 - El backend registra movimientos de inventario automáticamente en el historial cuando se incrementa stock o se realiza una salida.
 - El frontend protege rutas según el rol del usuario y muestra solo las opciones correspondientes.
-- El README raíz mantiene una visión general; los detalles técnicos están en los README de [`back/`](back/README.md) y [`front/`](front/README.md).
+- El README raíz mantiene una visión general; los detalles técnicos están en los README de [`backend/`](backend/README.md) y [`front/`](front/README.md).
 
 ## Docker
 

@@ -48,33 +48,33 @@ El backend expone una API protegida que permite:
 ## Estructura del Proyecto
 
 ```
-back/
-├── app/
-│   ├── main.py                        # FastAPI setup, Scalar, rutas
-│   ├── database/
-│   │   └── connection.py              # MySQL + SQLAlchemy
-│   ├── models/
-│   │   ├── usuario.py                 # ORM Usuario
-│   │   ├── producto.py                # ORM Producto
-│   │   └── historial.py               # ORM Historial
-│   ├── routes/
-│   │   ├── login.py                   # /api/login/auth, /refresh, /agregar_usuario
-│   │   ├── productos.py               # /api/productos/* (CRUD, stock, movimientos)
-│   │   └── movimientos.py             # /api/movimientos/obtener_movimientos
-│   ├── schemas/
-│   │   ├── auth.py                    # LoginRequest, RefreshRequest
-│   │   ├── nuevo_usuario.py           # NuevoUsuario (EmailStr)
-│   │   ├── producto.py                # ProductoCreate, StockUpdate
-│   │   └── movimiento.py              # (Deprecated - historial automático)
-│   └── utils/
-│       ├── auth.py                    # verify_token (JWT)
-│       ├── jwt.py                     # create_access_token, create_refresh_token
-│       ├── hash.py                    # hash_password, verify_password
-│       ├── roles.py                   # rol_requerido (dependencia)
-│       └── security.py                # (Config JWT)
-├── requirements.txt                   # Dependencias Python
-├── Dockerfile                         # Build container
-└── README.md                          # Esta documentación
+backend/
+├───────app/
+│       ├── main.py                        # FastAPI setup, Scalar, rutas
+│       ├── database/
+│       │   └── connection.py              # MySQL + SQLAlchemy
+│       ├── models/
+│       │   ├── usuario.py                 # ORM Usuario
+│       │   ├── producto.py                # ORM Producto
+│       │   └── historial.py               # ORM Historial
+│       ├── routes/
+│       │   ├── login.py                   # /api/login/auth, /refresh, /agregar_usuario
+│       │   ├── productos.py               # /api/productos/* (CRUD, stock, movimientos)
+│       │   └── movimientos.py             # /api/movimientos/obtener_movimientos
+│       ├── schemas/
+│       │   ├── auth.py                    # LoginRequest, RefreshRequest
+│       │   ├── nuevo_usuario.py           # NuevoUsuario (EmailStr)
+│       │   ├── producto.py                # ProductoCreate, StockUpdate
+│       │   └── movimiento.py              # (Deprecated - historial automático)
+│       └── utils/
+│           ├── auth.py                    # verify_token (JWT)
+│           ├── jwt.py                     # create_access_token, create_refresh_token
+│           ├── hash.py                    # hash_password, verify_password
+│           ├── roles.py                   # rol_requerido (dependencia)
+│           └── security.py                # (Config JWT)
+├───────requirements.txt                   # Dependencias Python
+├───────Dockerfile                         # Build container
+└───────README.md                          # Esta documentación
 ```
 
 ## Tecnologías Utilizadas
@@ -98,7 +98,7 @@ back/
 
 ### Variables de Entorno
 
-Crea archivo `.env` en `back/`:
+Crea archivo `.env` en `backend/`:
 
 ```env
 DB_HOST=localhost
@@ -149,7 +149,7 @@ source 03.INSERTS/05.INSERT_usuarios_admin.sql;
 ## Instalación
 
 ```bash
-cd back
+cd backend
 pip install -r requirements.txt
 ```
 

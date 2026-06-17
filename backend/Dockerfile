@@ -30,7 +30,7 @@ RUN chown -R appuser:appuser /app
 
 USER appuser
 
-# The application serves on port 8001 by default (see back/README.md)
+# The application serves on port 8001 by default (see backend/README.md)
 EXPOSE 8001
 
 # Start uvicorn (production: no auto-reload)

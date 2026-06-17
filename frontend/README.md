@@ -1,7 +1,7 @@
 # Frontend - React + Vite + Styled-Components
 
 <!-- Badges -->
-[![GitHub Repo](https://img.shields.io/badge/github-repo-0066cc?logo=github&logoColor=white)](https://github.com/aldogarciaolvera/EvaluacionTecnica) [![React](https://img.shields.io/badge/React-18.0-61DAFB?logo=react&logoColor=white)](https://reactjs.org) [![Vite](https://img.shields.io/badge/Vite-4.0-brightgreen?logo=vite&logoColor=white)](https://vitejs.dev) [![Zustand](https://img.shields.io/badge/Zustand-4.0-brown?logo=react&logoColor=white)](https://github.com/pmndrs/zustand) [![Styled Components](https://img.shields.io/badge/Styled--Components-5.0-DB7093?logo=styled-components&logoColor=white)](https://styled-components.com) [![pnpm](https://img.shields.io/badge/pnpm-7.0-0066cc?logo=pnpm&logoColor=white)](https://pnpm.io) [![Docker](https://img.shields.io/badge/Docker-%232496ED?logo=docker&logoColor=white)](https://www.docker.com)
+ [![React](https://img.shields.io/badge/React-18.0-61DAFB?logo=react&logoColor=white)](https://reactjs.org) [![Vite](https://img.shields.io/badge/Vite-4.0-brightgreen?logo=vite&logoColor=white)](https://vitejs.dev) [![Zustand](https://img.shields.io/badge/Zustand-4.0-brown?logo=react&logoColor=white)](https://github.com/pmndrs/zustand) [![Styled Components](https://img.shields.io/badge/Styled--Components-5.0-DB7093?logo=styled-components&logoColor=white)](https://styled-components.com) [![pnpm](https://img.shields.io/badge/pnpm-7.0-0066cc?logo=pnpm&logoColor=white)](https://pnpm.io) [![Docker](https://img.shields.io/badge/Docker-%232496ED?logo=docker&logoColor=white)](https://www.docker.com)
 
 Aplicación web para gestión de inventario. Desarrollada con React 18, Vite, y Zustand para state management.
 
@@ -96,7 +96,7 @@ src/
 ### 1. Instalar Dependencias
 
 ```bash
-cd front
+cd frontend
 pnpm install
 ```
 
