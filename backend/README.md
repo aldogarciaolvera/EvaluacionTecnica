@@ -108,6 +108,7 @@ DB_USER=tu_usuario
 DB_PASSWORD=tu_password_seguro
 SECRET_KEY=clave_secreta_muy_larga_minimo_32_caracteres
 ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
 
 ## Preparación de Base de Datos
